@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using TaskPortalApi.Interfaces;
 using TaskPortalApi.Models;
 
-
 namespace TaskPortalApi.Repository
 {
     public class ProjectRepository : IProjectRepository
@@ -39,7 +38,7 @@ namespace TaskPortalApi.Repository
         {
             await Task.Run(() => mytable.ExecuteAsync(TableOperation.Delete(myTableOperation)));
         }
-
+        
         public async Task<ProjectEntity> GetAsync(string partitionKey, string RowId)
         {
             var operation = TableOperation.Retrieve<ProjectEntity>(partitionKey, RowId);

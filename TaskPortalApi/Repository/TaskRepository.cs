@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using TaskPortalApi.Interfaces;
 using TaskPortalApi.Models;
 
-
 namespace TaskPortalApi.Repository
 {
     public class TaskRepository : ITaskRepository

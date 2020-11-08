@@ -57,13 +57,11 @@ namespace TaskPortalApi
                     ClockSkew = TimeSpan.FromMinutes(1)
                 };
             });
-
             services.AddSingleton<IJwtAuthManager, JwtAuthManager>();
             services.AddHostedService<JwtRefreshTokenCache>();
             services.AddScoped<IUserService, UserService>();
             services.AddTransient<IProjectRepository, ProjectRepository>();
             services.AddTransient<ITaskRepository, TaskRepository>();
-
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
@@ -110,7 +108,6 @@ namespace TaskPortalApi
                 options.AddPolicy("AllowAll",
                     builder => { builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader(); });
             });
-
 
             services.AddControllersWithViews().AddJsonOptions(options =>
                  options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));

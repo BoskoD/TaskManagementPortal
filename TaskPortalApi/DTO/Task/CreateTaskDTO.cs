@@ -8,18 +8,10 @@ namespace TaskPortalApi.DTO.Task
         [Required]
         public string Project { get; set; }
         public string Id { get; internal set; }
-
         [Required]
         public string Name { get; set; }
         public string Description { get; set; }
-
         [DefaultValue(false)]
         public bool IsComplete { get; set; }
-
-
     }
-
- 
-
-    
 }
