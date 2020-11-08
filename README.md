@@ -16,20 +16,20 @@ You need to deploy your service in Microsoft Azure and use tables (Azure Table S
 
 
 # Parts
-- Add connection to Azure Storage Table
-- Add models and entities
-- Add repositories and interface
-- Configure controllers
-- Make everything async
-- Add DTO objects
-- Add swagger
-- Add basic health checks
-- Add logging
-- Implement isComplete property
-- Add swagger description
-- Add authentication [JWT]
-- Add CORS
-- Deploy to Azure
+- Add connection to Azure Storage Table (1 day)
+- Add models and entities (2 days)
+- Add repositories and interface (2 days)
+- Configure controllers (7 days)
+- Make everything async (2 days)
+- Add DTO objects (1 day)
+- Add swagger (1 day)
+- Add basic health checks (1 day)
+- Add logging (2 days)
+- Implement isComplete property (2 days)
+- Add swagger description (3 days)
+- Add authentication [JWT] (3 days)
+- Add CORS (1 day)
+- Deploy to Azure (1 day)
 
 # TODO
 - Angular client
