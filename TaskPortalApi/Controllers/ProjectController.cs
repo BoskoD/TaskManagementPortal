@@ -31,6 +31,7 @@ namespace TaskPortalApi.Controllers
         /// Creates new Project.
         /// </summary>
         /// <param name="projectModel"></param>
+        /// <returns></returns>
         [HttpPost("create")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -66,8 +67,9 @@ namespace TaskPortalApi.Controllers
 
 
         /// <summary>
-        /// List all projects.
+        /// Lists all projects
         /// </summary>
+        /// <returns></returns>
         [HttpGet("readall")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> ReadAll()
@@ -95,6 +97,7 @@ namespace TaskPortalApi.Controllers
         /// Get specific project searching by id.
         /// </summary>
         /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("readbyid/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -121,9 +124,10 @@ namespace TaskPortalApi.Controllers
         }
 
         /// <summary>
-        /// Update the project.
+        /// Update the project
         /// </summary>
         /// <param name="projectModel"></param>
+        /// <returns></returns>
         [HttpPut("update")]
         public async Task<IActionResult> Update([FromBody] UpdateProjectDTO projectModel)
         {
@@ -148,9 +152,10 @@ namespace TaskPortalApi.Controllers
         }
 
         /// <summary>
-        /// Delete specific project by id.
+        /// Delete specific project by id
         /// </summary>
         /// <param name="id"></param>
+        /// <returns></returns>
         [HttpDelete("delete/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -179,7 +184,7 @@ namespace TaskPortalApi.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <param name="projectModel"></param>
-        /// <returns></returns>
+        /// <returns>Object id that has been removed</returns>
         [HttpDelete("deleteobject")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -206,7 +211,7 @@ namespace TaskPortalApi.Controllers
         /// List all tasks under specific project.
         /// </summary>
         /// <param name="id"></param>
-        /// <returns></returns>
+        /// <returns>All tasks for a specific project</returns>
         [HttpGet("readtasksfromproject/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

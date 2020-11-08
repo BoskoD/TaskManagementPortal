@@ -9,7 +9,6 @@ using Microsoft.IdentityModel.Tokens;
 using TaskPortalApi.Services;
 using TaskPortalApi.Interfaces;
 using TaskPortalApi.Infrastructure.JWT.AuthRequests;
-using TaskPortalApi.Infrastructure.JWT.Requests;
 
 namespace TaskPortalApi.Controllers
 {
@@ -29,6 +28,11 @@ namespace TaskPortalApi.Controllers
             _jwtAuthManager = jwtAuthManager;
         }
 
+        /// <summary>
+        /// login
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns>token</returns>
         [AllowAnonymous]
         [HttpPost("login")]
         public ActionResult Login([FromBody] LoginRequest request)
@@ -61,6 +65,10 @@ namespace TaskPortalApi.Controllers
             });
         }
 
+        /// <summary>
+        /// Retuns current user
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("user")]
         [Authorize]
         public ActionResult GetCurrentUser()
@@ -73,6 +81,10 @@ namespace TaskPortalApi.Controllers
             });
         }
 
+        /// <summary>
+        /// Logout, remove token
+        /// </summary>
+        /// <returns></returns>
         [HttpPost("logout")]
         [Authorize]
         public ActionResult Logout()
@@ -86,6 +98,11 @@ namespace TaskPortalApi.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Refresh JWT token on demand
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost("refreshtoken")]
         [Authorize]
         public async Task<ActionResult> RefreshToken([FromBody] RefreshTokenRequest request)

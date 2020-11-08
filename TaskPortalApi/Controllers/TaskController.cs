@@ -28,9 +28,10 @@ namespace TaskPortalApi.Controllers
         }
 
         /// <summary>
-        /// Creates new Task.
+        /// Creates new task
         /// </summary>
         /// <param name="taskModel"></param>
+        /// <returns></returns>
         [HttpPost("create")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -66,8 +67,9 @@ namespace TaskPortalApi.Controllers
         }
 
         /// <summary>
-        /// List all Tasks.
+        /// List all tasks
         /// </summary>
+        /// <returns></returns>
         [HttpGet("readall")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> ReadAll()
@@ -96,6 +98,7 @@ namespace TaskPortalApi.Controllers
         /// Get specific Task, ID lookup
         /// </summary>
         /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("readbyid/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -126,6 +129,7 @@ namespace TaskPortalApi.Controllers
         /// Update the Task.
         /// </summary>
         /// <param name="TaskModel"></param>
+        /// <returns></returns>
         [HttpPut("update")]
         public async Task<IActionResult> Update([FromBody] TaskUpdateModelDTO TaskModel)
         {
@@ -156,6 +160,7 @@ namespace TaskPortalApi.Controllers
         /// Delete specific Task.
         /// </summary>
         /// <param name="id"></param>
+        /// <returns></returns>
         [HttpDelete("delete/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete(string id)
@@ -199,6 +204,10 @@ namespace TaskPortalApi.Controllers
 
         }
 
+        /// <summary>
+        /// Gets all projects, id and name
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("readallprojectnames")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
