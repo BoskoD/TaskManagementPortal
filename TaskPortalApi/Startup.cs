@@ -70,7 +70,7 @@ namespace TaskPortalApi
                 {
 
                     Version = "v1",
-                    Title = "Task",
+                    Title = "Task Management Portal",
                     Description = "Akvelon task. Following tasks by projects.",
                     Contact = new OpenApiContact
                     {
