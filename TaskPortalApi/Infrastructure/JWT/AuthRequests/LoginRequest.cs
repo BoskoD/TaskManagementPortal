@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
-namespace TaskPortalApi.Infrastructure.JWT.Requests
+namespace TaskPortalApi.Infrastructure.JWT.AuthRequests
 {
     public class LoginRequest
     {
