@@ -32,6 +32,7 @@ You need to deploy your service in Microsoft Azure and use tables (Azure Table S
 - Deploy to Azure (1 day)
 
 # TODO
+- Refactor to DRY
 - Check for CPU bound vs I/O bound
 - Angular client
 - Refactor Update
