@@ -16,9 +16,9 @@ namespace TaskPortalApi.Services
 
         private readonly IDictionary<string, string> _users = new Dictionary<string, string>
         {
-            { "v-vlto", "qwerty" },
-            { "v-bodani", "qwerty" },
-            { "admin", "P@ssw0rd" }
+            { "<basic user>", "<password>" },
+            { "<basic user>", "<password>" },
+            { "<admin user>", "<password>" }
         };
 
         // inject your database here for user validation
