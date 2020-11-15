@@ -38,5 +38,6 @@ You need to deploy your service in Microsoft Azure and use tables (Azure Table S
 - Refactor Update
 - Add mapper
 - Add batch import/export
+- Update .NET 5
 
 
