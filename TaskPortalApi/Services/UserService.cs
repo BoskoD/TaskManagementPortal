@@ -17,7 +17,6 @@ namespace TaskPortalApi.Services
         private readonly IDictionary<string, string> _users = new Dictionary<string, string>
         {
             { "<basic user>", "<password>" },
-            { "<basic user>", "<password>" },
             { "<admin user>", "<password>" }
         };
 

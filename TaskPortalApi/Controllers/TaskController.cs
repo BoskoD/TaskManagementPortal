@@ -59,10 +59,6 @@ namespace TaskPortalApi.Controllers
             {
                 logger.LogError(e.Message);
             }
-            finally
-            {
-                logger.LogInformation("Operation finished.");
-            }
             return Ok();
         }
 
@@ -75,7 +71,7 @@ namespace TaskPortalApi.Controllers
         public async Task<IActionResult> ReadAll()
         {
             logger.LogInformation("Pulling entities from repository");
-            var entities = await Task.Run(() => repository.GetAllAsync());
+            var entities = await repository.GetAllAsync();
 
             if (entities == null)
             {
@@ -105,24 +101,20 @@ namespace TaskPortalApi.Controllers
         public async Task<ActionResult<TaskEntity>> ReadById(string id)
         {
             logger.LogInformation("Pulling entities from repository...");
-            var entities = await Task.Run(() => repository.GetAllAsync());
-            TaskEntity TaskEntity;
+            var entities = await repository.GetAllAsync();
+            TaskEntity taskEntity;
 
             try
             {
                 logger.LogInformation("Searching for the specified Task...");
-                TaskEntity = entities.First(e => e.RowKey == id);
+                taskEntity = entities.First(e => e.RowKey == id);
             }
             catch (Exception e)
             {
                 logger.LogCritical(e.Message);
                 return NotFound();
             }
-            finally
-            {
-                logger.LogInformation("Operation finished.");
-            }
-            return Ok(TaskEntity);
+            return Ok(taskEntity);
         }
 
         /// <summary>
@@ -133,7 +125,6 @@ namespace TaskPortalApi.Controllers
         [HttpPut("update")]
         public async Task<IActionResult> Update([FromBody] TaskUpdateModelDTO TaskModel)
         {
-
             if (!ModelState.IsValid)
             {
                 logger.LogCritical("Model state is not valid in this request, operation failure.");
@@ -151,7 +142,6 @@ namespace TaskPortalApi.Controllers
                 IsComplete = TaskModel.IsComplete,
                 ETag = "*"
             });
-
             logger.LogInformation("Task completed");
             return Ok(TaskModel);
         }
@@ -214,11 +204,12 @@ namespace TaskPortalApi.Controllers
         public async Task<IActionResult> GetAllProjectNames()
         {
             logger.LogInformation("Pulling entities from repository");
-            var entities = await Task.Run(() => projectRepository.GetAllAsync());
+            var entities = await projectRepository.GetAllAsync();
 
             if (entities == null)
             {
                 logger.LogWarning("No records found.");
+                return NotFound();
             }
 
             var model = entities.Select(x => new ReadProjectNamesDTO
