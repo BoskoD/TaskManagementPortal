@@ -75,7 +75,7 @@ namespace TaskPortalApi.Controllers
         public async Task<IActionResult> ReadAll()
         {
             logger.LogInformation("Pulling entities from repository");
-            var entities = await Task.Run(() => projectRepository.GetAllAsync());
+            var entities = await projectRepository.GetAllAsync();
 
             if (entities == null)
             {
@@ -104,7 +104,7 @@ namespace TaskPortalApi.Controllers
         public async Task<ActionResult<ProjectEntity>> ReadById(string id)
         {
             logger.LogInformation("Pulling entities from repository...");
-            var entities = await Task.Run(() => projectRepository.GetAllAsync());
+            var entities = await projectRepository.GetAllAsync();
             ProjectEntity projectEntity;
             try
             {
@@ -115,10 +115,6 @@ namespace TaskPortalApi.Controllers
             {
                 logger.LogCritical(e.Message);
                 return NotFound();
-            }
-            finally
-            {
-                logger.LogInformation("Operation finished.");
             }
             return Ok(projectEntity);
         }
@@ -218,17 +214,16 @@ namespace TaskPortalApi.Controllers
         public async Task<ActionResult<TaskEntity>> TasksByProject(string id)
         {
             logger.LogInformation("Pulling entities from repository...");
-
-            var entities = await Task.Run(() => 
-                taskRepository.GetAllAsync().Result.Where(t => t.PartitionKey.Contains(id)));
-
+            var entities = await taskRepository.GetAllAsync();
             logger.LogInformation($"Entities found {entities.Count()}");
 
-            if (entities.Count() == 0)
+            var tasks = entities.Where(t => t.PartitionKey.Contains(id));
+
+            if (tasks.Count() == 0)
             {
                 logger.LogWarning("Not Found");
             }
-            return Ok(entities);
+            return Ok(tasks);
         }
     }
 }
