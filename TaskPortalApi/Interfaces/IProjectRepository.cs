@@ -10,6 +10,5 @@ namespace TaskPortalApi.Interfaces
         Task CreateAsync(ProjectEntity myTableOperation);
         Task UpdateAsync(ProjectEntity myTableOperation);
         Task DeleteAsync(ProjectEntity myTableOperation);
-        Task<ProjectEntity> GetAsync(string partitionKey, string RowId);
     }
 }

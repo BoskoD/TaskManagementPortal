@@ -53,12 +53,7 @@ namespace TaskPortalApi.Services
             {
                 return string.Empty;
             }
-
-            if (userName == "admin")
-            {
-                return UserRoles.Admin;
-            }
-            return UserRoles.BasicUser;
+            return userName == "admin" ? UserRoles.Admin : UserRoles.BasicUser;
         }
     }
 }
