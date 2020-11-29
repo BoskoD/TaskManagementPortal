@@ -121,10 +121,10 @@ namespace TaskPortalApi.Controllers
         /// <summary>
         /// Update the Task.
         /// </summary>
-        /// <param name="taskModel"></param>
+        /// <param name="updateTaskDto"></param>
         /// <returns></returns>
         [HttpPut("update")]
-        public async Task<IActionResult> Update([FromBody] UpdateTaskDto taskModel)
+        public async Task<IActionResult> Update([FromBody] UpdateTaskDto updateTaskDto)
         {
             if (!ModelState.IsValid)
             {
@@ -136,15 +136,15 @@ namespace TaskPortalApi.Controllers
             await _repository.UpdateAsync(new TaskEntity
             {
                 // client should not change this partK & rowK
-                RowKey = taskModel.Id,
-                PartitionKey = taskModel.Project,
-                Name = taskModel.Name,
-                Description = taskModel.Description,
-                IsComplete = taskModel.IsComplete,
+                RowKey = updateTaskDto.Id,
+                PartitionKey = updateTaskDto.Project,
+                Name = updateTaskDto.Name,
+                Description = updateTaskDto.Description,
+                IsComplete = updateTaskDto.IsComplete,
                 ETag = "*"
             });
             _logger.LogInformation("Task completed");
-            return Ok(taskModel);
+            return Ok(updateTaskDto);
         }
 
         /// <summary>
@@ -215,8 +215,8 @@ namespace TaskPortalApi.Controllers
 
             var model = entities.Select(x => new ReadProjectNamesDto
             {
-                Name = x.PartitionKey,
-                Id = x.RowKey
+                Id = x.RowKey,
+                Name = x.PartitionKey
             });
             _logger.LogInformation("Print all table records.");
             return Ok(model);

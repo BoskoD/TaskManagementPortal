@@ -3,6 +3,5 @@
     public class DeleteProjectDto
     {
         public string Name { get; set; }
-
     }
 }

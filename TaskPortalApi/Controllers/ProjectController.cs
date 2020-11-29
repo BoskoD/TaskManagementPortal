@@ -31,12 +31,12 @@ namespace TaskPortalApi.Controllers
         /// <summary>
         /// Creates new Project.
         /// </summary>
-        /// <param name="projectModel"></param>
+        /// <param name="projectDto"></param>
         /// <returns></returns>
         [HttpPost("create")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Create([FromBody] CreateProjectDto projectModel)
+        public async Task<IActionResult> Create([FromBody] CreateProjectDto projectDto)
         {
             if (!ModelState.IsValid)
             {
@@ -48,10 +48,10 @@ namespace TaskPortalApi.Controllers
                 _logger.LogInformation("Populating new entity...");
                 await _projectRepository.CreateAsync(new ProjectEntity
                 {
-                    PartitionKey = projectModel.Name,
+                    PartitionKey = projectDto.Name,
                     RowKey = Guid.NewGuid().ToString(),
-                    Description = projectModel.Description,
-                    Code = projectModel.Code
+                    Description = projectDto.Description,
+                    Code = projectDto.Code
                 });
                 _logger.LogInformation("Task completed.");
             }
