@@ -1,8 +1,7 @@
 ﻿namespace TaskPortalApi.DTO.Task
 {
-    public class TaskDeleteModelDTO
+    public class DeleteTaskDto
     {
         public string Project { get;  set; }
-        public string TaskName { get; set; }
     }
 }

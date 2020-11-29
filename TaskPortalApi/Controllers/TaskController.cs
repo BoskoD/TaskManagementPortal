@@ -16,15 +16,15 @@ namespace TaskPortalApi.Controllers
     [Route("api/[controller]")]
     public class TaskController : ControllerBase
     {
-        private readonly ITaskRepository repository;
-        private readonly IProjectRepository projectRepository;
-        private readonly ILogger<TaskController> logger;
+        private readonly ITaskRepository _repository;
+        private readonly IProjectRepository _projectRepository;
+        private readonly ILogger<TaskController> _logger;
 
         public TaskController(ITaskRepository repository, IProjectRepository projectRepository, ILogger<TaskController> logger)
         {
-            this.repository = repository;
-            this.projectRepository = projectRepository;
-            this.logger = logger;
+            _repository = repository;
+            _projectRepository = projectRepository;
+            this._logger = logger;
         }
 
         /// <summary>
@@ -35,29 +35,29 @@ namespace TaskPortalApi.Controllers
         [HttpPost("create")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Create([FromBody] CreateTaskDTO taskModel)
+        public async Task<IActionResult> Create([FromBody] CreateTaskDto taskModel)
         {
             if (!ModelState.IsValid)
             {
-                logger.LogCritical("Model state is not valid in this request, operation failure.");
+                _logger.LogCritical("Model state is not valid in this request, operation failure.");
                 return BadRequest(ModelState);
             }
 
             try
             {
-                logger.LogInformation("Populating new entity...");
-                await repository.CreateAsync(new TaskEntity
+                _logger.LogInformation("Populating new entity...");
+                await _repository.CreateAsync(new TaskEntity
                 {
                     PartitionKey = taskModel.Project,
                     RowKey = Guid.NewGuid().ToString(),
                     Name = taskModel.Name,
                     Description = taskModel.Description,
                 });
-                logger.LogInformation("Task completed.");
+                _logger.LogInformation("Task completed.");
             }
             catch (Exception e)
             {
-                logger.LogError(e.Message);
+                _logger.LogError(e.Message);
             }
             return Ok();
         }
@@ -70,15 +70,16 @@ namespace TaskPortalApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> ReadAll()
         {
-            logger.LogInformation("Pulling entities from repository");
-            var entities = await repository.GetAllAsync();
+            _logger.LogInformation("Pulling entities from repository");
+            var entities = await _repository.GetAllAsync();
 
             if (entities == null)
             {
-                logger.LogWarning("No records found.");
+                _logger.LogWarning("No records found.");
+                return NotFound();
             }
 
-            var model = entities.Select(x => new CreateTaskDTO
+            var model = entities.Select(x => new CreateTaskDto
             {
                 Project = x.PartitionKey,
                 Id = x.RowKey,
@@ -86,7 +87,7 @@ namespace TaskPortalApi.Controllers
                 Description = x.Description,
                 IsComplete = x.IsComplete
             });
-            logger.LogInformation("Print all table records.");
+            _logger.LogInformation("Print all table records.");
             return Ok(model);
         }
 
@@ -100,18 +101,18 @@ namespace TaskPortalApi.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<TaskEntity>> ReadById(string id)
         {
-            logger.LogInformation("Pulling entities from repository...");
-            var entities = await repository.GetAllAsync();
+            _logger.LogInformation("Pulling entities from repository...");
+            var entities = await _repository.GetAllAsync();
             TaskEntity taskEntity;
 
             try
             {
-                logger.LogInformation("Searching for the specified Task...");
+                _logger.LogInformation("Searching for the specified Task...");
                 taskEntity = entities.First(e => e.RowKey == id);
             }
             catch (Exception e)
             {
-                logger.LogCritical(e.Message);
+                _logger.LogCritical(e.Message);
                 return NotFound();
             }
             return Ok(taskEntity);
@@ -120,30 +121,30 @@ namespace TaskPortalApi.Controllers
         /// <summary>
         /// Update the Task.
         /// </summary>
-        /// <param name="TaskModel"></param>
+        /// <param name="taskModel"></param>
         /// <returns></returns>
         [HttpPut("update")]
-        public async Task<IActionResult> Update([FromBody] TaskUpdateModelDTO TaskModel)
+        public async Task<IActionResult> Update([FromBody] UpdateTaskDto taskModel)
         {
             if (!ModelState.IsValid)
             {
-                logger.LogCritical("Model state is not valid in this request, operation failure.");
+                _logger.LogCritical("Model state is not valid in this request, operation failure.");
                 return BadRequest(ModelState);
             }
 
-            logger.LogInformation("Re-Populating existing record...");
-            await repository.UpdateAsync(new TaskEntity
+            _logger.LogInformation("Re-Populating existing record...");
+            await _repository.UpdateAsync(new TaskEntity
             {
                 // client should not change this partK & rowK
-                RowKey = TaskModel.Id,
-                PartitionKey = TaskModel.Project,
-                Name = TaskModel.Name,
-                Description = TaskModel.Description,
-                IsComplete = TaskModel.IsComplete,
+                RowKey = taskModel.Id,
+                PartitionKey = taskModel.Project,
+                Name = taskModel.Name,
+                Description = taskModel.Description,
+                IsComplete = taskModel.IsComplete,
                 ETag = "*"
             });
-            logger.LogInformation("Task completed");
-            return Ok(TaskModel);
+            _logger.LogInformation("Task completed");
+            return Ok(taskModel);
         }
 
         /// <summary>
@@ -155,14 +156,14 @@ namespace TaskPortalApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete(string id)
         {
-            var taskEntity = repository.GetAllAsync().Result.FirstOrDefault(p => p.RowKey == id);
+            var taskEntity = _repository.GetAllAsync().Result.FirstOrDefault(p => p.RowKey == id);
             if (taskEntity == null)
             {
-                logger.LogCritical("Model state is not valid in this request, operation failure.");
-                return BadRequest(ModelState);
+                _logger.LogCritical("Task not found");
+                return NotFound();
             }
-            await repository.DeleteAsync(taskEntity);
-            logger.LogInformation("Deleted record from repository.");
+            await _repository.DeleteAsync(taskEntity);
+            _logger.LogInformation($"Deleted task {id} from repository.");
             return Ok();
         }
 
@@ -170,27 +171,27 @@ namespace TaskPortalApi.Controllers
         /// Delete a specific task.
         /// </summary>
         /// <param name="id"></param>
-        /// <param name="TaskModel"></param>
+        /// <param name="taskModel"></param>
         /// <returns></returns>
         [HttpDelete("deleteobject/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public async Task<IActionResult> DeleteTask(string id, [FromBody] TaskDeleteModelDTO TaskModel)
+        public async Task<IActionResult> DeleteTask(string id, [FromBody] DeleteTaskDto taskModel)
         {
             if (!ModelState.IsValid)
             {
-                logger.LogCritical("Model state is not valid in this request, operation failure.");
+                _logger.LogCritical("Model state is not valid in this request.");
                 return BadRequest(ModelState);
             }
-            logger.LogInformation("Populating record before deletion...");
-            await repository.DeleteAsync(new TaskEntity
+            _logger.LogInformation("Populating record before deletion...");
+            await _repository.DeleteAsync(new TaskEntity
             {
-                PartitionKey = TaskModel.Project,
+                PartitionKey = taskModel.Project,
                 RowKey = id,
                 ETag = "*"
             });
-            logger.LogInformation("Deleted record from repository.");
-            return Ok(TaskModel);
+            _logger.LogInformation("Deleted record from repository.");
+            return Ok(taskModel);
 
         }
 
@@ -203,21 +204,21 @@ namespace TaskPortalApi.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> GetAllProjectNames()
         {
-            logger.LogInformation("Pulling entities from repository");
-            var entities = await projectRepository.GetAllAsync();
+            _logger.LogInformation("Pulling entities from repository");
+            var entities = await _projectRepository.GetAllAsync();
 
             if (entities == null)
             {
-                logger.LogWarning("No records found.");
+                _logger.LogWarning("No records found.");
                 return NotFound();
             }
 
-            var model = entities.Select(x => new ReadProjectNamesDTO
+            var model = entities.Select(x => new ReadProjectNamesDto
             {
                 Name = x.PartitionKey,
                 Id = x.RowKey
             });
-            logger.LogInformation("Print all table records.");
+            _logger.LogInformation("Print all table records.");
             return Ok(model);
         }
     }

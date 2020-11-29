@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TaskPortalApi.DTO.Task
 {
-    public class CreateTaskDTO
+    public class CreateTaskDto
     {
         [Required]
         public string Project { get; set; }

@@ -1,6 +1,6 @@
 ﻿namespace TaskPortalApi.DTO.Project
 {
-    public class DeleteProjectDTO
+    public class DeleteProjectDto
     {
         public string Name { get; set; }
 
