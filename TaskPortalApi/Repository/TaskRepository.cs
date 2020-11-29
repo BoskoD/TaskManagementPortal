@@ -9,34 +9,34 @@ namespace TaskPortalApi.Repository
 {
     public class TaskRepository : ITaskRepository
     {
-        private readonly CloudTable myTable = null;
+        private readonly CloudTable _myTable;
 
         public TaskRepository(IConfiguration configuration)
         {
             var storageAccount = CloudStorageAccount.Parse(configuration.GetConnectionString("StorageConnectionString"));
             var cloudTableClient = storageAccount.CreateCloudTableClient();
-            myTable = cloudTableClient.GetTableReference("Task");
-            myTable.CreateIfNotExistsAsync();
+            _myTable = cloudTableClient.GetTableReference("Task");
+            _myTable.CreateIfNotExistsAsync();
         }
 
         public async Task<IEnumerable<TaskEntity>> GetAllAsync()
         {
-            return await Task.Run(() => myTable.ExecuteQuery(new TableQuery<TaskEntity>()));
+            return await Task.Run(() => _myTable.ExecuteQuery(new TableQuery<TaskEntity>()));
         }
 
         public async Task CreateAsync(TaskEntity myTableOperation)
         {
-            await Task.Run(() => myTable.ExecuteAsync(TableOperation.InsertOrReplace(myTableOperation)));
+            await Task.Run(() => _myTable.ExecuteAsync(TableOperation.InsertOrReplace(myTableOperation)));
         }
 
         public async Task UpdateAsync(TaskEntity myTableOperation)
         {
-            await myTable.ExecuteAsync(TableOperation.Replace(myTableOperation));
+            await _myTable.ExecuteAsync(TableOperation.Replace(myTableOperation));
         }
 
         public async Task DeleteAsync(TaskEntity myTableOperation)
         {
-            await Task.Run(() => myTable.ExecuteAsync(TableOperation.Delete(myTableOperation)));
+            await Task.Run(() => _myTable.ExecuteAsync(TableOperation.Delete(myTableOperation)));
         }
        
     }

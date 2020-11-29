@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Authorization;
 using TaskPortalApi.Interfaces;
 using TaskPortalApi.DTO.Project;
 using TaskPortalApi.Models;
-using AutoMapper;
 
 namespace TaskPortalApi.Controllers
 {
@@ -21,14 +20,12 @@ namespace TaskPortalApi.Controllers
         private readonly IProjectRepository _projectRepository;
         private readonly ITaskRepository _taskRepository;
         private readonly ILogger<ProjectController> _logger;
-        private readonly IMapper _mapper;
 
-        public ProjectController(IProjectRepository projectRepository, ITaskRepository taskRepository, ILogger<ProjectController> logger, IMapper mapper)
+        public ProjectController(IProjectRepository projectRepository, ITaskRepository taskRepository, ILogger<ProjectController> logger)
         {
             _projectRepository = projectRepository;
             _taskRepository = taskRepository;
             _logger = logger;
-            _mapper = mapper;
         }
 
         /// <summary>
@@ -86,10 +83,8 @@ namespace TaskPortalApi.Controllers
                 _logger.LogWarning("No records found.");
             }
 
-            var projectEntity = new ProjectEntity();
-            var createProjectDto = _mapper.Map<CreateProjectDto>(projectEntity);
             _logger.LogInformation("Print all table records.");
-            return Ok(createProjectDto);
+            return Ok(entities);
         }
 
         /// <summary>
