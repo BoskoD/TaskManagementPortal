@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace TaskPortalApi.DTO.Task
 {
-    public class TaskUpdateModelDTO
+    public class UpdateTaskDTO
     {
         public string Project { get; set; }
         public string Id { get; set; }

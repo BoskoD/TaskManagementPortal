@@ -31,6 +31,8 @@ namespace TaskPortalApi
 
         public IConfiguration Configuration { get; }
 
+
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
@@ -117,7 +119,6 @@ namespace TaskPortalApi
                 builder.AddBlobServiceClient(Configuration["ConnectionStrings:StorageConnectionString:blob"], preferMsi: true);
                 builder.AddQueueServiceClient(Configuration["ConnectionStrings:StorageConnectionString:queue"], preferMsi: true);
             });
-
             services.AddHealthChecks();
         }
 
