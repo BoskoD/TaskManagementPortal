@@ -39,7 +39,7 @@ namespace TaskPortalApi.Controllers
         [HttpPost("create")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Create([FromBody] CreateProjectDTO projectModel)
+        public async Task<IActionResult> Create([FromBody] CreateProjectDto projectModel)
         {
             if (!ModelState.IsValid)
             {
@@ -87,7 +87,7 @@ namespace TaskPortalApi.Controllers
             }
 
             var projectEntity = new ProjectEntity();
-            var createProjectDto = _mapper.Map<CreateProjectDTO>(projectEntity);
+            var createProjectDto = _mapper.Map<CreateProjectDto>(projectEntity);
             _logger.LogInformation("Print all table records.");
             return Ok(createProjectDto);
         }
@@ -124,7 +124,7 @@ namespace TaskPortalApi.Controllers
         /// <param name="projectModel"></param>
         /// <returns></returns>
         [HttpPut("update")]
-        public async Task<IActionResult> Update([FromBody] UpdateProjectDTO projectModel)
+        public async Task<IActionResult> Update([FromBody] UpdateProjectDto projectModel)
         {
             if (!ModelState.IsValid)
             {
@@ -183,7 +183,7 @@ namespace TaskPortalApi.Controllers
         [HttpDelete("deleteobject")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public async Task<IActionResult> DeleteProject(string id, [FromBody] DeleteProjectDTO projectModel)
+        public async Task<IActionResult> DeleteProject(string id, [FromBody] DeleteProjectDto projectModel)
         {
             if (!ModelState.IsValid)
             {

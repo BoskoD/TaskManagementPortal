@@ -35,7 +35,7 @@ namespace TaskPortalApi.Controllers
         [HttpPost("create")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Create([FromBody] CreateTaskDTO taskModel)
+        public async Task<IActionResult> Create([FromBody] CreateTaskDto taskModel)
         {
             if (!ModelState.IsValid)
             {
@@ -79,7 +79,7 @@ namespace TaskPortalApi.Controllers
                 return NotFound();
             }
 
-            var model = entities.Select(x => new CreateTaskDTO
+            var model = entities.Select(x => new CreateTaskDto
             {
                 Project = x.PartitionKey,
                 Id = x.RowKey,
@@ -124,7 +124,7 @@ namespace TaskPortalApi.Controllers
         /// <param name="taskModel"></param>
         /// <returns></returns>
         [HttpPut("update")]
-        public async Task<IActionResult> Update([FromBody] UpdateTaskDTO taskModel)
+        public async Task<IActionResult> Update([FromBody] UpdateTaskDto taskModel)
         {
             if (!ModelState.IsValid)
             {
@@ -176,7 +176,7 @@ namespace TaskPortalApi.Controllers
         [HttpDelete("deleteobject/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public async Task<IActionResult> DeleteTask(string id, [FromBody] DeleteTaskDTO taskModel)
+        public async Task<IActionResult> DeleteTask(string id, [FromBody] DeleteTaskDto taskModel)
         {
             if (!ModelState.IsValid)
             {
@@ -213,7 +213,7 @@ namespace TaskPortalApi.Controllers
                 return NotFound();
             }
 
-            var model = entities.Select(x => new ReadProjectNamesDTO
+            var model = entities.Select(x => new ReadProjectNamesDto
             {
                 Name = x.PartitionKey,
                 Id = x.RowKey

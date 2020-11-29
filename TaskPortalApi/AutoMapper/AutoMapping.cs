@@ -13,13 +13,13 @@ namespace TaskPortalApi.AutoMapper
     {
         public AutoMapping()
         {
-            CreateMap<ProjectEntity, CreateProjectDTO>();
-            CreateMap<ProjectEntity, UpdateProjectDTO>();
-            CreateMap<ProjectEntity, DeleteProjectDTO>();
-            CreateMap<TaskEntity, CreateTaskDTO>();
-            CreateMap<TaskEntity, UpdateTaskDTO>();
-            CreateMap<TaskEntity, DeleteTaskDTO>();
-            CreateMap<TaskEntity, ReadProjectNamesDTO>();
+            CreateMap<ProjectEntity, CreateProjectDto>();
+            CreateMap<ProjectEntity, UpdateProjectDto>();
+            CreateMap<ProjectEntity, DeleteProjectDto>();
+            CreateMap<TaskEntity, CreateTaskDto>();
+            CreateMap<TaskEntity, UpdateTaskDto>();
+            CreateMap<TaskEntity, DeleteTaskDto>();
+            CreateMap<TaskEntity, ReadProjectNamesDto>();
         }
     }
 }

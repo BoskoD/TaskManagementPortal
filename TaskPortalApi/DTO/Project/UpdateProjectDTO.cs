@@ -1,6 +1,6 @@
 ﻿namespace TaskPortalApi.DTO.Project
 {
-    public class UpdateProjectDTO
+    public class UpdateProjectDto
     {
         public string Id { get; set; }
         public string Name { get; set; }
