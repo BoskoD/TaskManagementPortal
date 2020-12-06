@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using TaskPortalApi.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using TaskPortalApi.DTO.Task;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace TaskPortalApi.Controllers
 {
@@ -16,26 +18,29 @@ namespace TaskPortalApi.Controllers
     [Route("api/[controller]")]
     public class TaskController : ControllerBase
     {
-        private readonly ITaskRepository _repository;
+        private readonly IMemoryCache _memoryCache;
+        private readonly ITaskRepository _taskRepository;
         private readonly IProjectRepository _projectRepository;
         private readonly ILogger<TaskController> _logger;
 
-        public TaskController(ITaskRepository repository, IProjectRepository projectRepository, ILogger<TaskController> logger)
+        public TaskController(ITaskRepository taskRepository, IProjectRepository projectRepository, 
+            ILogger<TaskController> logger, IMemoryCache memoryCache)
         {
-            _repository = repository;
-            _projectRepository = projectRepository;
-            this._logger = logger;
+            _taskRepository = taskRepository;
+            _projectRepository = projectRepository; 
+            _logger = logger;
+            _memoryCache = memoryCache;
         }
 
         /// <summary>
-        /// Creates new task
+        /// Create new task
         /// </summary>
-        /// <param name="taskModel"></param>
+        /// <param name="createTaskDto"></param>
         /// <returns></returns>
         [HttpPost("create")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Create([FromBody] CreateTaskDto taskModel)
+        public async Task<IActionResult> Create([FromBody] CreateTaskDto createTaskDto)
         {
             if (!ModelState.IsValid)
             {
@@ -46,12 +51,12 @@ namespace TaskPortalApi.Controllers
             try
             {
                 _logger.LogInformation("Populating new entity...");
-                await _repository.CreateAsync(new TaskEntity
+                await _taskRepository.CreateAsync(new TaskEntity
                 {
-                    PartitionKey = taskModel.Project,
+                    PartitionKey = createTaskDto.Project,
                     RowKey = Guid.NewGuid().ToString(),
-                    Name = taskModel.Name,
-                    Description = taskModel.Description,
+                    Name = createTaskDto.Name,
+                    Description = createTaskDto.Description,
                 });
                 _logger.LogInformation("Task completed.");
             }
@@ -71,28 +76,23 @@ namespace TaskPortalApi.Controllers
         public async Task<IActionResult> ReadAll()
         {
             _logger.LogInformation("Pulling entities from repository");
-            var entities = await _repository.GetAllAsync();
+            if (!_memoryCache.TryGetValue("Entities", out IEnumerable<TaskEntity> entities))
+            {
+                _memoryCache.Set("Entities", await _taskRepository.GetAllAsync());
+            }
+            entities = _memoryCache.Get("Entities") as IEnumerable<TaskEntity>;
 
             if (entities == null)
             {
                 _logger.LogWarning("No records found.");
-                return NotFound();
             }
 
-            var model = entities.Select(x => new CreateTaskDto
-            {
-                Project = x.PartitionKey,
-                Id = x.RowKey,
-                Name = x.Name,
-                Description = x.Description,
-                IsComplete = x.IsComplete
-            });
             _logger.LogInformation("Print all table records.");
-            return Ok(model);
+            return Ok(entities);
         }
 
         /// <summary>
-        /// Get specific Task, ID lookup
+        /// Get specific task searching by rowKey
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -102,7 +102,7 @@ namespace TaskPortalApi.Controllers
         public async Task<ActionResult<TaskEntity>> ReadById(string id)
         {
             _logger.LogInformation("Pulling entities from repository...");
-            var entities = await _repository.GetAllAsync();
+            var entities = await _taskRepository.GetAllAsync();
             TaskEntity taskEntity;
 
             try
@@ -119,7 +119,7 @@ namespace TaskPortalApi.Controllers
         }
 
         /// <summary>
-        /// Update the Task.
+        /// Update the task
         /// </summary>
         /// <param name="id"></param>
         /// <param name="updateTaskDto"></param>
@@ -127,10 +127,6 @@ namespace TaskPortalApi.Controllers
         [HttpPut("update/{id}")]
         public async Task<IActionResult> Update(string id, [FromBody] UpdateTaskDto updateTaskDto)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
             if (!ModelState.IsValid)
             {
                 _logger.LogCritical("Model state is not valid in this request, operation failure.");
@@ -138,7 +134,7 @@ namespace TaskPortalApi.Controllers
             }
 
             _logger.LogInformation("Re-Populating existing record...");
-            await _repository.UpdateAsync(new TaskEntity
+            await _taskRepository.UpdateAsync(new TaskEntity
             {
                 RowKey = id,
                 PartitionKey = updateTaskDto.Project,
@@ -152,7 +148,7 @@ namespace TaskPortalApi.Controllers
         }
 
         /// <summary>
-        /// Delete specific Task.
+        /// Delete specific task by rowKey.
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -160,13 +156,13 @@ namespace TaskPortalApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete(string id)
         {
-            var taskEntity = _repository.GetAllAsync().Result.FirstOrDefault(p => p.RowKey == id);
+            var taskEntity = _taskRepository.GetAllAsync().Result.FirstOrDefault(p => p.RowKey == id);
             if (taskEntity == null)
             {
                 _logger.LogCritical("Task not found");
                 return NotFound();
             }
-            await _repository.DeleteAsync(taskEntity);
+            await _taskRepository.DeleteAsync(taskEntity);
             _logger.LogInformation($"Deleted task {id} from repository.");
             return Ok();
         }
@@ -175,12 +171,12 @@ namespace TaskPortalApi.Controllers
         /// Delete a specific task.
         /// </summary>
         /// <param name="id"></param>
-        /// <param name="taskModel"></param>
+        /// <param name="deleteTaskDto"></param>
         /// <returns></returns>
         [HttpDelete("deletetask")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public async Task<IActionResult> DeleteTask(string id, [FromBody] DeleteTaskDto taskModel)
+        public async Task<IActionResult> DeleteTask(string id, [FromBody] DeleteTaskDto deleteTaskDto)
         {
             if (!ModelState.IsValid)
             {
@@ -188,19 +184,19 @@ namespace TaskPortalApi.Controllers
                 return BadRequest(ModelState);
             }
             _logger.LogInformation("Populating record before deletion...");
-            await _repository.DeleteAsync(new TaskEntity
+            await _taskRepository.DeleteAsync(new TaskEntity
             {
-                PartitionKey = taskModel.Project,
+                PartitionKey = deleteTaskDto.Project,
                 RowKey = id,
                 ETag = "*"
             });
             _logger.LogInformation("Deleted record from repository.");
-            return Ok(taskModel);
+            return Ok(deleteTaskDto);
 
         }
 
         /// <summary>
-        /// Gets all projects, id and name
+        /// List all projects
         /// </summary>
         /// <returns></returns>
         [HttpGet("readallprojectnames")]
