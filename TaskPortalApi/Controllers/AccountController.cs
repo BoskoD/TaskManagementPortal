@@ -29,7 +29,7 @@ namespace TaskPortalApi.Controllers
         }
 
         /// <summary>
-        /// login
+        /// Login
         /// </summary>
         /// <param name="request"></param>
         /// <returns>token</returns>
@@ -66,7 +66,7 @@ namespace TaskPortalApi.Controllers
         }
 
         /// <summary>
-        /// Retuns current user
+        /// Return current user
         /// </summary>
         /// <returns></returns>
         [HttpGet("user")]
@@ -82,7 +82,7 @@ namespace TaskPortalApi.Controllers
         }
 
         /// <summary>
-        /// Logout, remove token
+        /// Logout and remove token
         /// </summary>
         /// <returns></returns>
         [HttpPost("logout")]
@@ -134,6 +134,11 @@ namespace TaskPortalApi.Controllers
             }
         }
 
+        /// <summary>
+        ///  Impersonate a particular user to check claims
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost("impersonation")]
         [Authorize(Roles = UserRoles.Admin)]
         public ActionResult Impersonate([FromBody] ImpersonationRequest request)
@@ -172,6 +177,10 @@ namespace TaskPortalApi.Controllers
             });
         }
 
+        /// <summary>
+        /// Stop impersonation 
+        /// </summary>
+        /// <returns></returns>
         [HttpPost("stopimpersonation")]
         public ActionResult StopImpersonation()
         {
