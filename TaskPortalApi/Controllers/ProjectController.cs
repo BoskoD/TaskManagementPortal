@@ -103,7 +103,7 @@ namespace TaskPortalApi.Controllers
             try
             {
                 _logger.LogInformation("Searching for the specified project...");
-                projectEntity = entities.First(e => e.RowKey == id);
+                projectEntity = entities.FirstOrDefault(e => e.RowKey == id);
             }
             catch (Exception e)
             {
@@ -116,11 +116,16 @@ namespace TaskPortalApi.Controllers
         /// <summary>
         /// Update the project
         /// </summary>
+        /// <param name="id"></param>
         /// <param name="projectModel"></param>
         /// <returns></returns>
         [HttpPut("update")]
-        public async Task<IActionResult> Update([FromBody] UpdateProjectDto projectModel)
+        public async Task<IActionResult> Update(string id, [FromBody] UpdateProjectDto projectModel)
         {
+            if (id == null)
+            {
+                return NotFound();
+            }
             if (!ModelState.IsValid)
             {
                 _logger.LogCritical("Model state is not valid in this request, operation failure.");
@@ -131,7 +136,7 @@ namespace TaskPortalApi.Controllers
             await _projectRepository.UpdateAsync(new ProjectEntity
             {
                 // client should not change this partK & rowK
-                RowKey = projectModel.Id,
+                RowKey = id,
                 PartitionKey = projectModel.Name,
                 Description = projectModel.Description,
                 Code = projectModel.Code,
@@ -175,7 +180,7 @@ namespace TaskPortalApi.Controllers
         /// <param name="id"></param>
         /// <param name="projectModel"></param>
         /// <returns>Object id that has been removed</returns>
-        [HttpDelete("deleteobject")]
+        [HttpDelete("deleteproject")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> DeleteProject(string id, [FromBody] DeleteProjectDto projectModel)

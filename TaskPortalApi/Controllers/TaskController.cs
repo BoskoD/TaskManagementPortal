@@ -108,7 +108,7 @@ namespace TaskPortalApi.Controllers
             try
             {
                 _logger.LogInformation("Searching for the specified Task...");
-                taskEntity = entities.First(e => e.RowKey == id);
+                taskEntity = entities.FirstOrDefault(e => e.RowKey == id);
             }
             catch (Exception e)
             {
@@ -173,7 +173,7 @@ namespace TaskPortalApi.Controllers
         /// <param name="id"></param>
         /// <param name="taskModel"></param>
         /// <returns></returns>
-        [HttpDelete("deleteobject/{id}")]
+        [HttpDelete("deletetask")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> DeleteTask(string id, [FromBody] DeleteTaskDto taskModel)
