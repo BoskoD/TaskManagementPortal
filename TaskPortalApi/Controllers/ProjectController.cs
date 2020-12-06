@@ -116,10 +116,10 @@ namespace TaskPortalApi.Controllers
         /// Update the project
         /// </summary>
         /// <param name="id"></param>
-        /// <param name="projectModel"></param>
+        /// <param name="updateProjectDto"></param>
         /// <returns></returns>
-        [HttpPut("update")]
-        public async Task<IActionResult> Update(string id, [FromBody] UpdateProjectDto projectModel)
+        [HttpPut("update/{id}")]
+        public async Task<IActionResult> Update(string id, [FromBody] UpdateProjectDto updateProjectDto)
         {
             if (id == null)
             {
@@ -135,13 +135,13 @@ namespace TaskPortalApi.Controllers
             await _projectRepository.UpdateAsync(new ProjectEntity
             {
                 RowKey = id,
-                PartitionKey = projectModel.Name,
-                Description = projectModel.Description,
-                Code = projectModel.Code,
+                PartitionKey = updateProjectDto.Name,
+                Description = updateProjectDto.Description,
+                Code = updateProjectDto.Code,
                 ETag = "*"
             });
             _logger.LogInformation("Task completed");
-            return Ok(projectModel);
+            return Ok(updateProjectDto);
         }
 
         /// <summary>
