@@ -118,9 +118,13 @@ namespace TaskPortalApi.Controllers
         /// <param name="id"></param>
         /// <param name="projectModel"></param>
         /// <returns></returns>
-        [HttpPut("update/{id}")]
+        [HttpPut("update")]
         public async Task<IActionResult> Update(string id, [FromBody] UpdateProjectDto projectModel)
         {
+            if (id == null)
+            {
+                return NotFound();
+            }
             if (!ModelState.IsValid)
             {
                 _logger.LogCritical("Model state is not valid in this request, operation failure.");
@@ -174,7 +178,7 @@ namespace TaskPortalApi.Controllers
         /// <param name="id"></param>
         /// <param name="projectModel"></param>
         /// <returns>Object id that has been removed</returns>
-        [HttpDelete("deleteproject/{id}")]
+        [HttpDelete("deleteproject")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> DeleteProject(string id, [FromBody] DeleteProjectDto projectModel)

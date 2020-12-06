@@ -177,7 +177,7 @@ namespace TaskPortalApi.Controllers
         /// <param name="id"></param>
         /// <param name="taskModel"></param>
         /// <returns></returns>
-        [HttpDelete("deletetask/{id}")]
+        [HttpDelete("deletetask")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> DeleteTask(string id, [FromBody] DeleteTaskDto taskModel)
