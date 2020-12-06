@@ -135,7 +135,6 @@ namespace TaskPortalApi.Controllers
             _logger.LogInformation("Re-Populating existing record...");
             await _projectRepository.UpdateAsync(new ProjectEntity
             {
-                // client should not change this partK & rowK
                 RowKey = id,
                 PartitionKey = projectModel.Name,
                 Description = projectModel.Description,
