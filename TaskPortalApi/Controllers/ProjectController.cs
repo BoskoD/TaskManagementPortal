@@ -66,7 +66,6 @@ namespace TaskPortalApi.Controllers
             return Ok();
         }
 
-
         /// <summary>
         /// Lists all projects
         /// </summary>
@@ -131,7 +130,7 @@ namespace TaskPortalApi.Controllers
                 _logger.LogCritical("Model state is not valid in this request, operation failure.");
                 return BadRequest(ModelState);
             }
-
+            
             _logger.LogInformation("Re-Populating existing record...");
             await _projectRepository.UpdateAsync(new ProjectEntity
             {

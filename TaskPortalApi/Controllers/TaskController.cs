@@ -121,11 +121,16 @@ namespace TaskPortalApi.Controllers
         /// <summary>
         /// Update the Task.
         /// </summary>
+        /// <param name="id"></param>
         /// <param name="updateTaskDto"></param>
         /// <returns></returns>
-        [HttpPut("update")]
-        public async Task<IActionResult> Update([FromBody] UpdateTaskDto updateTaskDto)
+        [HttpPut("update/{id}")]
+        public async Task<IActionResult> Update(string id, [FromBody] UpdateTaskDto updateTaskDto)
         {
+            if (id == null)
+            {
+                return NotFound();
+            }
             if (!ModelState.IsValid)
             {
                 _logger.LogCritical("Model state is not valid in this request, operation failure.");
@@ -135,8 +140,7 @@ namespace TaskPortalApi.Controllers
             _logger.LogInformation("Re-Populating existing record...");
             await _repository.UpdateAsync(new TaskEntity
             {
-                // client should not change this partK & rowK
-                RowKey = updateTaskDto.Id,
+                RowKey = id,
                 PartitionKey = updateTaskDto.Project,
                 Name = updateTaskDto.Name,
                 Description = updateTaskDto.Description,

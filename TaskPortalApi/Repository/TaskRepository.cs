@@ -14,6 +14,7 @@ namespace TaskPortalApi.Repository
         public TaskRepository(IConfiguration configuration)
         {
             var storageAccount = CloudStorageAccount.Parse(configuration.GetConnectionString("StorageConnectionString"));
+            //var storageAccount = CloudStorageAccount.Parse(ConfigurationManager.AppSettings["StorageConnectionString"]);
             var cloudTableClient = storageAccount.CreateCloudTableClient();
             _myTable = cloudTableClient.GetTableReference("Task");
             _myTable.CreateIfNotExistsAsync();
