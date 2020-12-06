@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Caching.Memory;
 using TaskPortalApi.Interfaces;
 using TaskPortalApi.DTO.Project;
 using TaskPortalApi.Models;
@@ -17,24 +18,27 @@ namespace TaskPortalApi.Controllers
     [Route("api/[controller]")]
     public class ProjectController : ControllerBase
     {
+        private readonly IMemoryCache _memoryCache;
         private readonly IProjectRepository _projectRepository;
         private readonly ITaskRepository _taskRepository;
         private readonly ILogger<ProjectController> _logger;
 
-        public ProjectController(IProjectRepository projectRepository, ITaskRepository taskRepository, ILogger<ProjectController> logger)
+        public ProjectController(IProjectRepository projectRepository, ITaskRepository taskRepository, 
+            ILogger<ProjectController> logger, IMemoryCache memoryCache)
         {
             _projectRepository = projectRepository;
             _taskRepository = taskRepository;
             _logger = logger;
+            _memoryCache = memoryCache;
         }
 
         /// <summary>
-        /// Creates new Project.
+        /// Create new project
         /// </summary>
         /// <param name="projectDto"></param>
         /// <returns></returns>
         [HttpPost("create")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Create([FromBody] CreateProjectDto projectDto)
         {
@@ -67,15 +71,20 @@ namespace TaskPortalApi.Controllers
         }
 
         /// <summary>
-        /// Lists all projects
+        /// List all projects
         /// </summary>
         /// <returns></returns>
         [HttpGet("readall")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> ReadAll()
         {
             _logger.LogInformation("Pulling entities from repository");
-            var entities = await _projectRepository.GetAllAsync();
+            if (!_memoryCache.TryGetValue("Entities", out IEnumerable<ProjectEntity> entities))
+            {
+                _memoryCache.Set("Entities", await _projectRepository.GetAllAsync());
+            }
+            entities = _memoryCache.Get("Entities") as IEnumerable<ProjectEntity>;
 
             if (entities == null)
             {
@@ -87,7 +96,7 @@ namespace TaskPortalApi.Controllers
         }
 
         /// <summary>
-        /// Get specific project searching by id.
+        /// Get specific project searching by rowKey
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -141,7 +150,7 @@ namespace TaskPortalApi.Controllers
         }
 
         /// <summary>
-        /// Delete specific project by id
+        /// Delete specific project by rowKey
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -197,7 +206,7 @@ namespace TaskPortalApi.Controllers
         }
 
         /// <summary>
-        /// List all tasks under specific project.
+        /// List all tasks under specific project
         /// </summary>
         /// <param name="id"></param>
         /// <returns>All tasks for a specific project</returns>
