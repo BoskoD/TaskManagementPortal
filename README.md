@@ -29,6 +29,7 @@ You need to deploy your service in Microsoft Azure and use tables (Azure Table S
 - Add swagger description (3 days)
 - Add authentication [JWT] (3 days)
 - Add CORS (1 day)
+- Add Angular client
 - Deploy to Azure (1 day)
 
 # TODO
