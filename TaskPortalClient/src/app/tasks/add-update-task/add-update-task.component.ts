@@ -11,11 +11,11 @@ export class AddUpdateTaskComponent implements OnInit {
   constructor(private service:SharedService) { }
 
   @Input() task:any;
-  Project:string;
-  Id:string;
-  Name:string;
-  Description: string;
-  IsComplete: string;
+  partitionKey:string;
+  rowKey:string;
+  name:string;
+  description: string;
+  isComplete: string;
 
   ProjectsList:any=[];
 
@@ -24,34 +24,37 @@ export class AddUpdateTaskComponent implements OnInit {
   }
 
   loadProjectsList(){
-    this.service.getAllProjectNames().subscribe((data:any)=>{
+    this.service.readAllProjectNames().subscribe((data:any)=>{
       this.ProjectsList=data;
 
-      this.Id=this.task.Id;
-      this.Name=this.task.Name;
-      this.Project=this.task.Project;
-      this.Description=this.task.Description;
-      this.IsComplete=this.task.IsComplete;
+      this.rowKey=this.task.rowKey;
+      this.name=this.task.name;
+      this.partitionKey=this.task.partitionKey;
+      this.description=this.task.description;
+      this.isComplete=this.task.isComplete;
+
+      console.log(data);
+
     });
   }
 
   addTask(){
-    var val = { Project:this.Project,
-                Id:this.Id,
-                Name:this.Name,
-                Description:this.Description,
-                IsComplete:this.IsComplete};
+    var val = { partitionKey:this.partitionKey,
+                rowKey:this.rowKey,
+                name:this.name,
+                description:this.description,
+                isComplete:this.isComplete};
     this.service.addTask(val).subscribe(res=>{
       alert("New task created");
     });
   }
 
   updateTask(){
-    var val = { Project:this.Project,
-                Id:this.Id,
-                Name:this.Name,
-                Description:this.Description,
-                IsComplete:this.IsComplete};
+    var val = { partitionKey:this.partitionKey,
+                rowKey:this.rowKey,
+                name:this.name,
+                description:this.description,
+                isComplete:this.isComplete};
     this.service.updateTask(val).subscribe(res=>{
     alert("Task updated");
     });

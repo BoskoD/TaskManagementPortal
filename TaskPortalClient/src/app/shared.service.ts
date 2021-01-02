@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { baseUrl} from "../environments/environment"
 
@@ -30,8 +30,6 @@ export class SharedService {
     return this.http.get(`${baseUrl}project/taskbyproject/{id}`, val);
   }
 
-
-
   getTasksList():Observable<any[]>{
     return this.http.get<any>(`${baseUrl}task/readall`);
   }
@@ -48,7 +46,7 @@ export class SharedService {
     return this.http.delete(`${baseUrl}task/delete`, val);
   }
 
-  getAllProjectNames():Observable<any[]>{
-    return this.http.get<any[]>(`${baseUrl}task/getallprojectnames`);
+  readAllProjectNames():Observable<any[]>{
+    return this.http.get<any[]>(`${baseUrl}task/readallprojectnames`);
   }
 }
