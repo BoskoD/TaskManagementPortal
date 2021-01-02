@@ -1,44 +1,42 @@
 <div class="d-flex flex-row bd-highlight mb-3">
 
-    <div class="form-froup row">
+    <div class="form-froup row" style="width: 60%;">
     
         <label class="col-sm-2 col-form-label">Project</label>
         <div class="col-sm-10">
-           <select class="form-control" [(ngModel)]="Project">
+           <select class="form-control" [(ngModel)]="partitionKey">
                <option>--Select--</option>
-               <option *ngFor="let projName of ProjectsList">
-                   {{projName.Id}}
+               <option *ngFor="let projectName of ProjectsList">
+                   {{ projectName.partitionKey }}
                </option>
            </select>
         </div>
 
-        
-
         <label class="col-sm-2 col-form-label">Task Name</label>
         <div class="col-sm-10">
-            <input type="text" class="form-control" [(ngModel)]="Name"
+            <input type="text" class="form-control" [(ngModel)]="name"
             placeholder="Task Name">
         </div>
 
         <label class="col-sm-2 col-form-label">Description</label>
         <div class="col-sm-10">
-            <input type="text" class="form-control" [(ngModel)]="Description"
+            <input type="text" class="form-control" [(ngModel)]="description"
             placeholder="Description">
         </div>
 
-        <label class="col-sm-2 col-form-label">State</label>
+        <label class="col-sm-2 col-form-label">Completed</label>
         <div class="col-sm-10">
-            <input type="text" class="form-control" [(ngModel)]="IsComplete"
-            placeholder="IsComplete">
+            <input type="text" class="form-control" [(ngModel)]="isComplete"
+            placeholder="Completed">
         </div>
     </div>
     
     
-    <button (click)="addTask()" *ngIf="task.Id==0" class="btn btn-primary">
+    <button (click)="addTask()" *ngIf="task.rowKey==0" class="btn btn-primary">
         Add
     </button>
     
-    <button (click)="updateTask()" *ngIf="task.Id!=0" class="btn btn-primary">
+    <button (click)="updateTask()" *ngIf="task.rowKey!=0" class="btn btn-primary">
         Update
     </button>
 </div>

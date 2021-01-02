@@ -18,11 +18,11 @@ export class ShowTasksComponent implements OnInit {
 
   addClick(){
     this.task= {
-      Project:"",
-      Id:0,
-      Name:"",
-      Description:"",
-      IsComplete:""
+      partitionKey:"",
+      rowKey:0,
+      name:"",
+      description:"",
+      isComplete:""
     }
     this.ModalTitle="Add Task";
     this.ActivateAddUpdateTaskComponent=true;
@@ -31,18 +31,18 @@ export class ShowTasksComponent implements OnInit {
 
   updateClick(item: any){
     this.task= {
-      Project:item.Project,
-      Id:item.id,
-      Name:item.Name,
-      Description:item.Description,
-      IsComplete:item.IsComplete}
+      partitionKey:item.partitionKey,
+      rowKey:item.rowKey,
+      name:item.name,
+      description:item.description,
+      isComplete:item.isComplete}
     this.ModalTitle="Update Task info";
     this.ActivateAddUpdateTaskComponent=true;
   }
 
-  deleteClick(item: { id: any; }){
+  deleteClick(item: { rowKey: any; }){
     if(confirm('Are you sure??')){
-      this.service.deleteProject(item.id).subscribe(data=>{
+      this.service.deleteProject(item.rowKey).subscribe(data=>{
         alert("Record deleted!");
         this.refreshTasksList();
       })
@@ -69,9 +69,5 @@ export class ShowTasksComponent implements OnInit {
     });
 
   }
-
-
-
-
 }
 

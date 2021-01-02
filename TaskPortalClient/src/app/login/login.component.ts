@@ -35,8 +35,6 @@ export class LoginComponent implements OnInit {
 
           console.log(result);
           alert(result.message);
-
-          this.router.navigate(["/"]);
         }
         else
         {

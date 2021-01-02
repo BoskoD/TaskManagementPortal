@@ -6,8 +6,8 @@ import { TasksComponent } from "./tasks/tasks.component";
 import { ProjectsComponent } from "./projects/projects.component";
 
 const routes: Routes = [
-  { path: '', component: HomeComponent },
   { path: 'login', component: LoginComponent },
+  { path: 'home', component: HomeComponent },
   { path: 'projects', component: ProjectsComponent },
   { path: 'tasks', component: TasksComponent }
   ];
