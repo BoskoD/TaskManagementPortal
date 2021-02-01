@@ -19,10 +19,10 @@
     </div>
 </div>
 
-<button (click)="addProject()" *ngIf="project.rowKey===0" class="btn btn-primary">
+<button (click)="addProject()" *ngIf="project.rowKey==0" class="btn btn-primary">
     Add
 </button>
 
-<button (click)="updateProject()" *ngIf="project.rowKey!==0" class="btn btn-primary">
+<button (click)="updateProject()" *ngIf="project.rowKey!=0" class="btn btn-primary">
     Update
 </button>

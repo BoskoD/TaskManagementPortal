@@ -15,6 +15,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using TaskPortalApi.Helpers;
 using TaskPortalApi.Infrastructure.JWT;
 using TaskPortalApi.Interfaces;
 using TaskPortalApi.Repository;
@@ -37,31 +38,35 @@ namespace TaskPortalApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMemoryCache();
+            services.AddCors();
             services.AddControllers();
-            var jwtTokenConfig = Configuration.GetSection("jwtTokenConfig").Get<JwtTokenConfig>();
-            services.AddSingleton(jwtTokenConfig);
+
+            // configure strongly typed settings objects
+            var appSettingsSection = Configuration.GetSection("AppSettings");
+            services.Configure<AppSettings>(appSettingsSection);
+
+            // configure jwt authentication
+            var appSettings = appSettingsSection.Get<AppSettings>();
+            var key = Encoding.ASCII.GetBytes(appSettings.Secret);
             services.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(x =>
+            })
+            .AddJwtBearer(x =>
             {
-                x.RequireHttpsMetadata = true;
+                x.RequireHttpsMetadata = false;
                 x.SaveToken = true;
                 x.TokenValidationParameters = new TokenValidationParameters
                 {
-                    ValidateIssuer = true,
-                    ValidIssuer = jwtTokenConfig.Issuer,
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtTokenConfig.Secret)),
-                    ValidAudience = jwtTokenConfig.Audience,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ClockSkew = TimeSpan.FromMinutes(1)
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
                 };
             });
-            services.AddSingleton<IJwtAuthManager, JwtAuthManager>();
-            services.AddHostedService<JwtRefreshTokenCache>();
+
+            // configure DI for application services
             services.AddScoped<IUserService, UserService>();
             services.AddTransient<IProjectRepository, ProjectRepository>();
             services.AddTransient<ITaskRepository, TaskRepository>();
@@ -106,12 +111,6 @@ namespace TaskPortalApi
                 });
             });
 
-            services.AddCors(options =>
-            {
-                options.AddPolicy("AllowAll",
-                    builder => { builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader(); });
-            });
-
             services.AddControllersWithViews().AddJsonOptions(options =>
                  options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
@@ -138,9 +137,16 @@ namespace TaskPortalApi
             });
 
             app.UseRouting();
-            app.UseCors("AllowAll");
+
+            // global cors policy
+            app.UseCors(x => x
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader());
+
             app.UseAuthentication();
             app.UseAuthorization();
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
