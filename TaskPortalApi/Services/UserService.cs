@@ -1,59 +1,73 @@
-﻿using System.Collections.Generic;
-using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
+using System.Security.Claims;
+using System.Text;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using TaskPortalApi.Entities;
+using TaskPortalApi.Helpers;
+using TaskPortalApi.Interfaces;
 
 namespace TaskPortalApi.Services
 {
-    public interface IUserService
-    {
-        bool IsAnExistingUser(string userName);
-        bool IsValidUserCredentials(string userName, string password);
-        string GetUserRole(string userName);
-    }
+   
 
     public class UserService : IUserService
     {
-        private readonly ILogger<UserService> _logger;
+        // users hardcoded for simplicity, store in a db with hashed passwords in production applications
+        private List<User> _users = new List<User>
+        { 
+            new User { Id = 1, FirstName = "Admin", LastName = "User", Username = "admin", Password = "admin", Role = Role.Admin },
+            new User { Id = 2, FirstName = "Normal", LastName = "User", Username = "v-vlto", Password = "qwerty", Role = Role.User },
+            new User { Id = 3, FirstName = "Normal", LastName = "User", Username = "v-bodani", Password = "qwerty", Role = Role.User }
 
-        private readonly IDictionary<string, string> _users = new Dictionary<string, string>
-        {
-            { "v-vlto", "qwerty" },
-            { "v-bodani", "qwerty" },
-            { "admin", "P@ssw0rd" }
         };
 
-        // inject your database here for user validation
-        public UserService(ILogger<UserService> logger)
+        private readonly AppSettings _appSettings;
+
+        public UserService(IOptions<AppSettings> appSettings)
         {
-            _logger = logger;
+            _appSettings = appSettings.Value;
         }
 
-        public bool IsValidUserCredentials(string userName, string password)
+        public User Authenticate(string username, string password)
         {
-            _logger.LogInformation($"Validating user [{userName}]");
-            if (string.IsNullOrWhiteSpace(userName))
-            {
-                return false;
-            }
+            var user = _users.SingleOrDefault(x => x.Username == username && x.Password == password);
 
-            if (string.IsNullOrWhiteSpace(password))
+            // return null if user not found
+            if (user == null)
+                return null;
+
+            // authentication successful so generate jwt token
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
+            var tokenDescriptor = new SecurityTokenDescriptor
             {
-                return false;
-            }
-            return _users.TryGetValue(userName, out var p) && p == password;
+                Subject = new ClaimsIdentity(new Claim[] 
+                {
+                    new Claim(ClaimTypes.Name, user.Id.ToString()),
+                    new Claim(ClaimTypes.Role, user.Role)
+                }),
+                Expires = DateTime.UtcNow.AddDays(7),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            user.Token = tokenHandler.WriteToken(token);
+
+            return user.WithoutPassword();
         }
 
-        public bool IsAnExistingUser(string userName)
+        public IEnumerable<User> GetAll()
         {
-            return _users.ContainsKey(userName);
+            return _users.WithoutPasswords();
         }
 
-        public string GetUserRole(string userName)
+        public User GetById(int id) 
         {
-            if (!IsAnExistingUser(userName))
-            {
-                return string.Empty;
-            }
-            return userName == "admin" ? UserRoles.Admin : UserRoles.BasicUser;
+            var user = _users.FirstOrDefault(x => x.Id == id);
+            return user.WithoutPassword();
         }
     }
 }

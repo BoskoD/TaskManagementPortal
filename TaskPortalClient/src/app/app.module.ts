@@ -1,57 +1,58 @@
-import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http'
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { LoginComponent } from './login/login.component';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatCardModule } from '@angular/material/card';
-import { MatButtonModule } from '@angular/material/button';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from "@angular/material/form-field";
-import { MatToolbarModule } from "@angular/material/toolbar";
-import { FlexLayoutModule } from "@angular/flex-layout";
-import { HomeComponent } from './home/home/home.component';
+import { BrowserModule } from '@angular/platform-browser';
+import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';  // <<<< import it here
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AddUpdateProjectComponent } from './projects/add-update-project/add-update-project.component';
 import { AddUpdateTaskComponent } from './tasks/add-update-task/add-update-task.component';
 import { ShowProjectsComponent } from './projects/show-projects/show-projects.component';
 import { ShowTasksComponent } from './tasks/show-tasks/show-tasks.component';
-import { SharedService } from '../app/shared.service'
 import { ProjectsComponent } from './projects/projects.component';
 import { TasksComponent } from './tasks/tasks.component';
+import { SharedService } from '../app/shared.service'
 
-export function tokenGetter(){
-  return localStorage.getItem('jwt')
-}
+
+
+// used to create fake backend
+import { fakeBackendProvider } from './_helpers';
+
+import { AppComponent } from './app.component';
+import { AppRoutingModule } from './app-routing.module';
+
+import { JwtInterceptor, ErrorInterceptor } from './_helpers';
+import { HomeComponent } from './home';
+import { AdminComponent } from './admin';
+import { LoginComponent } from './login';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    LoginComponent,
-    HomeComponent,
-    AddUpdateProjectComponent,
-    AddUpdateTaskComponent,
-    ShowProjectsComponent,
-    ShowTasksComponent,
-    ProjectsComponent,
-    TasksComponent
-  ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    HttpClientModule,
-    FormsModule,
-    ReactiveFormsModule,
-    BrowserAnimationsModule,
-    MatCardModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatToolbarModule,
-    FlexLayoutModule
-  ],
-  providers: [SharedService],
-  bootstrap: [AppComponent]
+    imports: [
+        BrowserModule,
+        ReactiveFormsModule,
+        HttpClientModule,
+        AppRoutingModule,
+        FormsModule
+    ],
+    declarations: [
+        AppComponent,
+        HomeComponent,
+        AdminComponent,
+        LoginComponent,
+        AddUpdateProjectComponent,
+        AddUpdateTaskComponent,
+        ShowProjectsComponent,
+        ShowTasksComponent,
+        ProjectsComponent,
+        TasksComponent
+    ],
+    providers: [
+        [SharedService],
+        { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
+        { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+
+        // provider used to create fake backend
+        //fakeBackendProvider
+    ],
+    bootstrap: [AppComponent]
 })
+
 export class AppModule { }
