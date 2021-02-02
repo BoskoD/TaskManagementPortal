@@ -17,11 +17,11 @@ namespace TaskPortalApi.Services
     public class UserService : IUserService
     {
         // users hardcoded for simplicity, store in a db with hashed passwords in production applications
-        private List<User> _users = new List<User>
+        private List<UserEntity> _users = new List<UserEntity>
         { 
-            new User { Id = 1, FirstName = "Admin", LastName = "User", Username = "admin", Password = "admin", Role = Role.Admin },
-            new User { Id = 2, FirstName = "Normal", LastName = "User", Username = "v-vlto", Password = "qwerty", Role = Role.User },
-            new User { Id = 3, FirstName = "Normal", LastName = "User", Username = "v-bodani", Password = "qwerty", Role = Role.User }
+            new UserEntity { Id = 1, FirstName = "Admin", LastName = "User", Username = "admin", Password = "admin", Role = RoleEntity.Admin },
+            new UserEntity { Id = 2, FirstName = "Normal", LastName = "User", Username = "v-vlto", Password = "qwerty", Role = RoleEntity.User },
+            new UserEntity { Id = 3, FirstName = "Normal", LastName = "User", Username = "v-bodani", Password = "qwerty", Role = RoleEntity.User }
 
         };
 
@@ -32,7 +32,7 @@ namespace TaskPortalApi.Services
             _appSettings = appSettings.Value;
         }
 
-        public User Authenticate(string username, string password)
+        public UserEntity Authenticate(string username, string password)
         {
             var user = _users.SingleOrDefault(x => x.Username == username && x.Password == password);
 
@@ -59,12 +59,12 @@ namespace TaskPortalApi.Services
             return user.WithoutPassword();
         }
 
-        public IEnumerable<User> GetAll()
+        public IEnumerable<UserEntity> GetAll()
         {
             return _users.WithoutPasswords();
         }
 
-        public User GetById(int id) 
+        public UserEntity GetById(int id) 
         {
             var user = _users.FirstOrDefault(x => x.Id == id);
             return user.WithoutPassword();

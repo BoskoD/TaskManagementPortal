@@ -2,8 +2,8 @@
 using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using TaskPortalApi.Entities;
 using TaskPortalApi.Interfaces;
-using TaskPortalApi.Models;
 
 namespace TaskPortalApi.Repository
 {

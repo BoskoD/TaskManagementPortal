@@ -5,8 +5,8 @@ namespace TaskPortalApi.Interfaces
 {
     public interface IUserService
     {
-        User Authenticate(string username, string password);
-        IEnumerable<User> GetAll();
-        User GetById(int id);
+        UserEntity Authenticate(string username, string password);
+        IEnumerable<UserEntity> GetAll();
+        UserEntity GetById(int id);
     }
 }

@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Caching.Memory;
 using TaskPortalApi.Interfaces;
 using TaskPortalApi.DTO.Project;
-using TaskPortalApi.Models;
+using TaskPortalApi.Entities;
 
 namespace TaskPortalApi.Controllers
 {

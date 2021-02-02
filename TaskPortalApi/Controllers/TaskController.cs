@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using TaskPortalApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using TaskPortalApi.Interfaces;
@@ -10,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using TaskPortalApi.DTO.Task;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Caching.Memory;
+using TaskPortalApi.Entities;
 
 namespace TaskPortalApi.Controllers
 {
