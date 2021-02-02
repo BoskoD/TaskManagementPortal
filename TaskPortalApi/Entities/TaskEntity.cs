@@ -1,6 +1,6 @@
 ﻿using Microsoft.Azure.Cosmos.Table;
 
-namespace TaskPortalApi.Models
+namespace TaskPortalApi.Entities
 {
     public class TaskEntity : TableEntity
     {

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using TaskPortalApi.Models;
+using TaskPortalApi.Entities;
 
 namespace TaskPortalApi.Interfaces
 {

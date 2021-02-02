@@ -30,7 +30,7 @@ namespace TaskPortalApi.Controllers
             return Ok(user);
         }
 
-        [Authorize(Roles = Role.Admin)]
+        [Authorize(Roles = RoleEntity.Admin)]
         [HttpGet]
         public IActionResult GetAll()
         {
@@ -43,7 +43,7 @@ namespace TaskPortalApi.Controllers
         {
             // only allow admins to access other user records
             var currentUserId = int.Parse(User.Identity.Name);
-            if (id != currentUserId && !User.IsInRole(Role.Admin))
+            if (id != currentUserId && !User.IsInRole(RoleEntity.Admin))
                 return Forbid();
 
             var user = _userService.GetById(id);

@@ -6,14 +6,14 @@ namespace TaskPortalApi.Helpers
 {
     public static class ExtensionMethods
     {
-        public static IEnumerable<User> WithoutPasswords(this IEnumerable<User> users) 
+        public static IEnumerable<UserEntity> WithoutPasswords(this IEnumerable<UserEntity> users) 
         {
             if (users == null) return null;
 
             return users.Select(x => x.WithoutPassword());
         }
 
-        public static User WithoutPassword(this User user) 
+        public static UserEntity WithoutPassword(this UserEntity user) 
         {
             if (user == null) return null;
 
