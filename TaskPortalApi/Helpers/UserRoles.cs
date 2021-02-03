@@ -1,4 +1,4 @@
-﻿namespace TaskPortalApi.Services
+﻿namespace TaskPortalApi.Helpers
 {
     public static class UserRoles
     {

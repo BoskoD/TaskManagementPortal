@@ -18,7 +18,6 @@ using Microsoft.OpenApi.Models;
 using TaskPortalApi.Helpers;
 using TaskPortalApi.Interfaces;
 using TaskPortalApi.Repository;
-using TaskPortalApi.Services;
 
 namespace TaskPortalApi
 {
@@ -63,7 +62,7 @@ namespace TaskPortalApi
             });
 
             // configure DI for application services
-            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IUserRepository, UserRepository>();
             services.AddTransient<IProjectRepository, ProjectRepository>();
             services.AddTransient<ITaskRepository, TaskRepository>();
             services.AddSwaggerGen(c =>
