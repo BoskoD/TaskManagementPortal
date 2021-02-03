@@ -25,19 +25,20 @@ You need to deploy your service in Microsoft Azure and use tables (Azure Table S
 - Add swagger (1 day)
 - Add basic health checks (1 day)
 - Add logging (2 days)
+- Refactor Update (2 days)
 - Implement isComplete property (2 days)
 - Add swagger description (3 days)
 - Add authentication [JWT] (3 days)
 - Add CORS (1 day)
 - Add Angular client
 - Deploy to Azure (1 day)
+- Update .NET 5 (< 1day)
+
 
 # TODO
 - Refactor to DRY
 - Angular client
-- Refactor Update
 - Add mapper
 - Add batch import/export
-- Update .NET 5
 
 
