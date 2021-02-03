@@ -9,10 +9,10 @@ export class UserService {
     constructor(private http: HttpClient) { }
 
     getAll() {
-        return this.http.get<User[]>(`${baseUrl}users`);
+        return this.http.get<User[]>(`${baseUrl}user`);
     }
 
     getById(id: number) {
-        return this.http.get<User>(`${baseUrl}users/${id}`);
+        return this.http.get<User>(`${baseUrl}user/${id}`);
     }
 }

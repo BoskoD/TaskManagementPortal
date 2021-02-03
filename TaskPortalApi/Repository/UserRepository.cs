@@ -10,9 +10,9 @@ using TaskPortalApi.Entities;
 using TaskPortalApi.Helpers;
 using TaskPortalApi.Interfaces;
 
-namespace TaskPortalApi.Services
+namespace TaskPortalApi.Repository
 {
-    public class UserService : IUserService
+    public class UserRepository : IUserRepository
     {
         // users hardcoded for simplicity, store in a db with hashed passwords in production applications
         private readonly List<UserEntity> _users = new List<UserEntity>
@@ -24,7 +24,7 @@ namespace TaskPortalApi.Services
 
         private readonly AppSettings _appSettings;
 
-        public UserService(IOptions<AppSettings> appSettings)
+        public UserRepository(IOptions<AppSettings> appSettings)
         {
             _appSettings = appSettings.Value;
         }

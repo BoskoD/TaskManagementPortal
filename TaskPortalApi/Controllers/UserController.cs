@@ -9,20 +9,20 @@ namespace TaskPortalApi.Controllers
     [Authorize]
     [ApiController]
     [Route("api/[controller]")]
-    public class UsersController : ControllerBase
+    public class UserController : ControllerBase
     {
-        private IUserService _userService;
+        private readonly IUserRepository _userRepository;
 
-        public UsersController(IUserService userService)
+        public UserController(IUserRepository userRepository)
         {
-            _userService = userService;
+            _userRepository = userRepository;
         }
 
         [AllowAnonymous]
         [HttpPost("authenticate")]
         public IActionResult Authenticate([FromBody] AuthenticateModel model)
         {
-            var user = _userService.Authenticate(model.Username, model.Password);
+            var user = _userRepository.Authenticate(model.Username, model.Password);
 
             if (user == null)
                 return BadRequest(new { message = "Username or password is incorrect" });
@@ -34,7 +34,7 @@ namespace TaskPortalApi.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            var users = _userService.GetAll();
+            var users = _userRepository.GetAll();
             return Ok(users);
         }
 
@@ -46,7 +46,7 @@ namespace TaskPortalApi.Controllers
             if (id != currentUserId && !User.IsInRole(RoleEntity.Admin))
                 return Forbid();
 
-            var user = _userService.GetById(id);
+            var user = _userRepository.GetById(id);
 
             if (user == null)
                 return NotFound();
