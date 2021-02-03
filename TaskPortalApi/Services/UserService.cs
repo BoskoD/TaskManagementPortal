@@ -12,8 +12,6 @@ using TaskPortalApi.Interfaces;
 
 namespace TaskPortalApi.Services
 {
-   
-
     public class UserService : IUserService
     {
         // users hardcoded for simplicity, store in a db with hashed passwords in production applications
