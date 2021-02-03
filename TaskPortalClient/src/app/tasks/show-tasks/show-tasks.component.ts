@@ -56,12 +56,9 @@ export class ShowTasksComponent implements OnInit {
     this.refreshTasksList();
   }
 
-
   ngOnInit(): void {
     this.refreshTasksList();
   }
-
-
 
   refreshTasksList(){
     this.service.getTasksList().subscribe(data=>{

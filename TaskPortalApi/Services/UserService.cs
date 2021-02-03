@@ -17,12 +17,11 @@ namespace TaskPortalApi.Services
     public class UserService : IUserService
     {
         // users hardcoded for simplicity, store in a db with hashed passwords in production applications
-        private List<UserEntity> _users = new List<UserEntity>
+        private readonly List<UserEntity> _users = new List<UserEntity>
         { 
-            new UserEntity { Id = 1, FirstName = "Admin", LastName = "User", Username = "admin", Password = "admin", Role = RoleEntity.Admin },
-            new UserEntity { Id = 2, FirstName = "Normal", LastName = "User", Username = "v-vlto", Password = "qwerty", Role = RoleEntity.User },
-            new UserEntity { Id = 3, FirstName = "Normal", LastName = "User", Username = "v-bodani", Password = "qwerty", Role = RoleEntity.User }
-
+            new UserEntity { Id = 1, FirstName = "Bosko", LastName = "Danilovic", Username = "admin", Password = "admin", Role = RoleEntity.Admin },
+            new UserEntity { Id = 2, FirstName = "Vladimir", LastName = "Toshchev", Username = "v-vlto", Password = "qwerty", Role = RoleEntity.User },
+            new UserEntity { Id = 3, FirstName = "Bosko", LastName = "Danilovic", Username = "v-bodani", Password = "qwerty", Role = RoleEntity.User }
         };
 
         private readonly AppSettings _appSettings;
