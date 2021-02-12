@@ -19,7 +19,7 @@ export class AddUpdateProjectComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.rowKey=this.project.Id;
+    this.rowKey=this.project.rowKey;
     this.partitionKey=this.project.partitionKey;
     this.description=this.project.description;
     this.code=this.project.code;

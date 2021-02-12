@@ -59,8 +59,6 @@ export class ShowProjectsComponent implements OnInit {
     }
   }
 
-  
-
   refreshProjectsList(){
     this.service.getProjectsList().subscribe(data=>{
       this.ProjectList = data;
