@@ -23,7 +23,7 @@ export class ShowProjectsComponent implements OnInit {
 
   addClick(){
     this.project= {
-      rowKey: 0,
+      rowKey:0,
       partitionKey: "",
       description: "",
       code: ""
@@ -40,7 +40,7 @@ export class ShowProjectsComponent implements OnInit {
   }
 
   updateClick(item: any){
-    console.log('hello from add component')
+    console.log('hello from update component')
     this.project= {
       rowKey:item.rowKey,
       partitionKey:item.partitionKey,
