@@ -27,7 +27,7 @@ export class AddUpdateProjectComponent implements OnInit {
 
 
   addProject(){
-    var val = {rowKey:this.rowKey,
+    var val = { rowKey:this.rowKey,
                 partitionKey:this.partitionKey,
                 description:this.description,
                 code:this.code};
@@ -37,8 +37,8 @@ export class AddUpdateProjectComponent implements OnInit {
   }
 
   updateProject(){
-    var val = { partitionKey:this.partitionKey,
-                rowKey:this.rowKey,
+    var val = { rowKey:this.rowKey,
+                partitionKey:this.partitionKey,
                 description:this.description,
                 code:this.code};
     this.service.updateProject(val).subscribe(res=>{

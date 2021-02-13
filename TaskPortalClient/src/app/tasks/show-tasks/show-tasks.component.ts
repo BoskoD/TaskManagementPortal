@@ -42,7 +42,7 @@ export class ShowTasksComponent implements OnInit {
 
   deleteClick(item: { rowKey: any; }){
     if(confirm('Are you sure??')){
-      this.service.deleteProject(item.rowKey).subscribe(data=>{
+      this.service.deleteTask(item.rowKey).subscribe(data=>{
         alert("Record deleted!");
         this.refreshTasksList();
       })

@@ -62,6 +62,7 @@ namespace TaskPortalApi.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e.Message);
+                return BadRequest();
             }
             finally
             {
@@ -163,12 +164,11 @@ namespace TaskPortalApi.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> Delete(string id)
         {
-            if (!ModelState.IsValid)
+            if (id == null)
             {
                 _logger.LogCritical("Model state is not valid in this request, operation failure.");
-                return BadRequest(ModelState);
+                return BadRequest();
             }
-
             try
             {
                 var projectEntity = _projectRepository.GetAllAsync().Result.FirstOrDefault(p => p.RowKey == id);
@@ -177,6 +177,7 @@ namespace TaskPortalApi.Controllers
             catch (Exception e)
             {
                 _logger.LogCritical(e.Message);
+                return BadRequest("Operation did not complete!");
             }
             return Ok();
         }

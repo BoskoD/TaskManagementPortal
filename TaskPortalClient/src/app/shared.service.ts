@@ -23,7 +23,7 @@ export class SharedService {
   }
 
   deleteProject(val:any){
-    return this.http.delete(`${baseUrl}project/delete`, val);
+    return this.http.delete(`${baseUrl}project/delete/` + val);
   }
 
   getAllTasksInAProject(val: any){
@@ -43,7 +43,7 @@ export class SharedService {
   }
 
   deleteTask(val:any){
-    return this.http.delete(`${baseUrl}task/delete`, val);
+    return this.http.delete(`${baseUrl}task/delete/` + val);
   }
 
   readAllProjectNames():Observable<any[]>{
