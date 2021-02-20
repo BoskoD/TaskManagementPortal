@@ -27,7 +27,7 @@ export class SharedService {
   }
 
   getAllTasksInAProject(val: any){
-    return this.http.get(`${baseUrl}project/taskbyproject/{id}`, val);
+    return this.http.get(`${baseUrl}project/taskbyproject`, val);
   }
 
   getTasksList():Observable<any[]>{

@@ -13,14 +13,14 @@ export class AddUpdateProjectComponent implements OnInit {
 
   @Input() project:any;
   rowKey:string;
-  partitionKey:string;
+  name:string;
   description: string;
   code: string;
 
 
   ngOnInit(): void {
     this.rowKey=this.project.rowKey;
-    this.partitionKey=this.project.partitionKey;
+    this.name=this.project.partitionKey;
     this.description=this.project.description;
     this.code=this.project.code;
   }
@@ -28,7 +28,7 @@ export class AddUpdateProjectComponent implements OnInit {
 
   addProject(){
     var val = { rowKey:this.rowKey,
-                partitionKey:this.partitionKey,
+                name:this.name,
                 description:this.description,
                 code:this.code};
     this.service.addProject(val).subscribe(res=>{
@@ -38,11 +38,16 @@ export class AddUpdateProjectComponent implements OnInit {
 
   updateProject(){
     var val = { rowKey:this.rowKey,
-                partitionKey:this.partitionKey,
+                name:this.name,
                 description:this.description,
                 code:this.code};
     this.service.updateProject(val).subscribe(res=>{
-    alert("Project updated");
+      if (res == null) {
+        console.log("error");
+      }
+      else{
+        alert("Project updated");
+      }
     });
   }
 }

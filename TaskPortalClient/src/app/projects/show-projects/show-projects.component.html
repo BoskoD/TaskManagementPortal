@@ -24,10 +24,9 @@ data-backdrop="static" data-keyboard="false"> Add Project </button>
   </div>
 
 
-<table class="table table-borderd table-stripped table-responsive table-hover" style="font-size: smaller;"> 
+<table class="table table-stripped table-responsive table-hover" style="font-size: smaller;"> 
     <thead>
         <tr>
-            <th scope="col">Id</th>
             <th scope="col">Name</th>
             <th scope="col">Description</th>
             <th scope="col">Code</th>
@@ -36,7 +35,6 @@ data-backdrop="static" data-keyboard="false"> Add Project </button>
     </thead>
     <tbody>
         <tr *ngFor="let dataItem of ProjectList">
-            <td>{{dataItem.rowKey}}</td>
             <td>{{dataItem.partitionKey}}</td>
             <td>{{dataItem.description}}</td>
             <td>{{dataItem.code}}</td>
