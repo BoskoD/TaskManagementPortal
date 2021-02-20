@@ -29,7 +29,7 @@ export class AddUpdateTaskComponent implements OnInit {
 
       this.rowKey=this.task.rowKey;
       this.name=this.task.name;
-      this.partitionKey=this.task.partitionKey;
+      this.partitionKey=data.id;
       this.description=this.task.description;
       this.isComplete=this.task.isComplete;
 

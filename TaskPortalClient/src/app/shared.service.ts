@@ -39,7 +39,7 @@ export class SharedService {
   }
 
   updateTask(val:any){
-    return this.http.put(`${baseUrl}task/update`, val);
+    return this.http.put(`${baseUrl}task/update/${val.rowKey}`, val);
   }
 
   deleteTask(val:any){

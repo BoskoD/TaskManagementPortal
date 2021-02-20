@@ -12,11 +12,11 @@ export class ShowTasksComponent implements OnInit {
   constructor(private service:SharedService) { }
 
   TasksList:any=[];
+  ProjectsList:any=[];
 
   ModalTitle: string;
   ActivateAddUpdateTaskComponent: boolean=false;
   task: any;
-  ProjectsList:any=[];
 
   loadProjectsList(){
     this.service.readAllProjectNames().subscribe((data:any)=>{

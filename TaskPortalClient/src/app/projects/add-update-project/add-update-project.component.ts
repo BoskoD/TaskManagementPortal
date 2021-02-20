@@ -42,12 +42,8 @@ export class AddUpdateProjectComponent implements OnInit {
                 description:this.description,
                 code:this.code};
     this.service.updateProject(val).subscribe(res=>{
-      if (res == null) {
-        console.log("error");
-      }
-      else{
-        alert("Project updated");
-      }
-    });
+        alert("Project updated")
+      });
+    };
   }
-}
+
