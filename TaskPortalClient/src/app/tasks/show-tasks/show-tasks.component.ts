@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {SharedService} from 'src/app/shared.service';
+import {AddUpdateTaskComponent} from "../add-update-task/add-update-task.component"
 
 @Component({
   selector: 'app-show-tasks',
@@ -15,8 +16,18 @@ export class ShowTasksComponent implements OnInit {
   ModalTitle: string;
   ActivateAddUpdateTaskComponent: boolean=false;
   task: any;
+  ProjectsList:any=[];
 
-  addClick(){
+  loadProjectsList(){
+    this.service.readAllProjectNames().subscribe((data:any)=>{
+      this.ProjectsList=data;
+
+      console.log(data);
+    });
+  }
+
+
+  addClick(){ 
     this.task= {
       partitionKey:"",
       rowKey:0,
@@ -63,6 +74,7 @@ export class ShowTasksComponent implements OnInit {
   refreshTasksList(){
     this.service.getTasksList().subscribe(data=>{
       this.TasksList = data;
+      this.loadProjectsList();
     });
 
   }
