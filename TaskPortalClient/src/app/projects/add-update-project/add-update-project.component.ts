@@ -32,6 +32,7 @@ export class AddUpdateProjectComponent implements OnInit {
                 description:this.description,
                 code:this.code};
     this.service.addProject(val).subscribe(res=>{
+      console.log(res);
       alert("Project added");
     });
   }
@@ -42,7 +43,8 @@ export class AddUpdateProjectComponent implements OnInit {
                 description:this.description,
                 code:this.code};
     this.service.updateProject(val).subscribe(res=>{
-        alert("Project updated")
+        console.log(res);
+        alert("Project updated");
       });
     };
   }

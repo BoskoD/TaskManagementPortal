@@ -12,10 +12,9 @@ export class AddUpdateTaskComponent implements OnInit {
 
   @Input() task:any;
   partitionKey:string;
-  rowKey:string;
   name:string;
   description: string;
-  isComplete: string;
+  isComplete: boolean;
 
   ProjectsList:any=[];
 
@@ -27,7 +26,6 @@ export class AddUpdateTaskComponent implements OnInit {
     this.service.readAllProjectNames().subscribe((data:any)=>{
       this.ProjectsList=data;
 
-      this.rowKey=this.task.rowKey;
       this.name=this.task.name;
       this.partitionKey=data.id;
       this.description=this.task.description;
@@ -40,22 +38,21 @@ export class AddUpdateTaskComponent implements OnInit {
 
   addTask(){
     var val = { partitionKey:this.partitionKey,
-                rowKey:this.rowKey,
                 name:this.name,
-                description:this.description,
-                isComplete:this.isComplete};
+                description:this.description};
     this.service.addTask(val).subscribe(res=>{
+      console.log(res);
       alert("New task created");
     });
   }
 
   updateTask(){
     var val = { partitionKey:this.partitionKey,
-                rowKey:this.rowKey,
                 name:this.name,
                 description:this.description,
                 isComplete:this.isComplete};
     this.service.updateTask(val).subscribe(res=>{
+      console.log(res);
     alert("Task updated");
     });
   }

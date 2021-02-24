@@ -1,8 +1,6 @@
-﻿using Microsoft.Azure.Cosmos.Table;
-
-namespace TaskPortalApi.Entities
+﻿namespace TaskPortalApi.Entities
 {
-    public class TaskEntity : TableEntity
+    public class TaskEntity : Entity
     {
         public string Name { get; set; }
         public string Description { get; set; }

@@ -32,21 +32,9 @@ namespace TaskPortalApi.Controllers
             _memoryCache = memoryCache;
         }
 
-        /// <summary>
-        /// Create new project
-        /// </summary>
-        /// <param name="projectDto"></param>
-        /// <returns></returns>
         [HttpPost("create")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Create([FromBody] CreateProjectDto projectDto)
         {
-            if (!ModelState.IsValid)
-            {
-                _logger.LogCritical("Model state is not valid in this request, operation failure.");
-                return BadRequest(ModelState);
-            }
             try
             {
                 _logger.LogInformation("Populating new entity...");
@@ -55,7 +43,7 @@ namespace TaskPortalApi.Controllers
                     PartitionKey = projectDto.Name,
                     RowKey = Guid.NewGuid().ToString(),
                     Description = projectDto.Description,
-                    Code = projectDto.Code
+                    Code = projectDto.Code,
                 });
                 _logger.LogInformation("Task completed.");
             }
@@ -68,16 +56,10 @@ namespace TaskPortalApi.Controllers
             {
                 _logger.LogInformation("Operation finished.");
             }
-            return Ok();
+            return Ok(projectDto);
         }
 
-        /// <summary>
-        /// List all projects
-        /// </summary>
-        /// <returns></returns>
         [HttpGet("readall")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> ReadAll()
         {
             _logger.LogInformation("Pulling entities from repository");
@@ -96,14 +78,7 @@ namespace TaskPortalApi.Controllers
             return Ok(entities);
         }
 
-        /// <summary>
-        /// Get specific project searching by rowKey
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
         [HttpGet("readbyid/{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<ProjectEntity>> ReadById(string id)
         {
             _logger.LogInformation("Pulling entities from repository...");
@@ -122,12 +97,6 @@ namespace TaskPortalApi.Controllers
             return Ok(projectEntity);
         }
 
-        /// <summary>
-        /// Update the project
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="updateProjectDto"></param>
-        /// <returns></returns>
         [HttpPut("update/{id}")]
         public async Task<IActionResult> Update(string id, [FromBody] UpdateProjectDto updateProjectDto)
         {
@@ -135,12 +104,6 @@ namespace TaskPortalApi.Controllers
             {
                 return NotFound();
             }
-            if (!ModelState.IsValid)
-            {
-                _logger.LogCritical("Model state is not valid in this request, operation failure.");
-                return BadRequest(ModelState);
-            }
-            
             _logger.LogInformation("Re-Populating existing record...");
             await _projectRepository.UpdateAsync(new ProjectEntity
             {
@@ -154,70 +117,51 @@ namespace TaskPortalApi.Controllers
             return Ok(updateProjectDto);
         }
 
-        /// <summary>
-        /// Delete specific project by rowKey
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
         [HttpDelete("delete/{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> Delete(string id)
         {
-            if (id == null)
-            {
-                _logger.LogCritical("Model state is not valid in this request, operation failure.");
-                return BadRequest();
-            }
             try
             {
                 var projectEntity = _projectRepository.GetAllAsync().Result.FirstOrDefault(p => p.RowKey == id);
                 await _projectRepository.DeleteAsync(projectEntity);
+                return Ok();
             }
             catch (Exception e)
             {
                 _logger.LogCritical(e.Message);
                 return BadRequest("Operation did not complete!");
             }
-            return Ok();
+            finally {
+                _logger.LogInformation("Operation completed");
+            }
         }
 
-        /// <summary>
-        /// Delete record
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="projectModel"></param>
-        /// <returns>Object id that has been removed</returns>
         [HttpDelete("deleteproject")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> DeleteProject(string id, [FromBody] DeleteProjectDto projectModel)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                _logger.LogCritical("Model state is not valid in this request, operation failure.");
-                return BadRequest(ModelState);
+                _logger.LogInformation("Populating record before deletion...");
+                await _projectRepository.DeleteAsync(new ProjectEntity
+                {
+                    PartitionKey = projectModel.Name,
+                    RowKey = id,
+                    ETag = "*"
+                });
+                _logger.LogInformation("Deleted record from repository.");
+                return Ok(projectModel);
             }
-
-            _logger.LogInformation("Populating record before deletion...");
-            await _projectRepository.DeleteAsync(new ProjectEntity
+            catch (Exception)
             {
-                PartitionKey = projectModel.Name,
-                RowKey = id,
-                ETag = "*"
-            });
-            _logger.LogInformation("Deleted record from repository.");
-            return Ok(projectModel);
+                throw;
+            }
+            finally 
+            {
+                _logger.LogInformation("Operation completed!");
+            }
         }
 
-        /// <summary>
-        /// List all tasks under specific project
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns>All tasks for a specific project</returns>
         [HttpGet("readtasksfromproject/{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<TaskEntity>> TasksByProject(string id)
         {
             _logger.LogInformation("Pulling entities from repository...");
