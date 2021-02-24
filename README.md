@@ -1,5 +1,7 @@
 # TaskManagementPortal
 
+## STACK [ASPNET.Core 5 + Angular]
+
 ## Implementing a task storage by projects. 
 “Task” – is an instance which contains at least 3 fields listed below:
 1.	Id
