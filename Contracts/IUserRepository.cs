@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using TaskPortalApi.Entities;
+﻿using Entities.Entities;
+using System.Collections.Generic;
 
-namespace TaskPortalApi.Interfaces
+namespace Contracts
 {
     public interface IUserRepository
     {

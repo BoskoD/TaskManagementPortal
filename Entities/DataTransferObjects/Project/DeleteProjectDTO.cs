@@ -1,11 +1,10 @@
 ﻿using System;
 
-namespace TaskPortalApi.DTO.Project
+namespace Entities.DataTransferObjects.Project
 {
     public class DeleteProjectDto
     {
         public string Name { get; set; }
         public string Timestamp { get; } = DateTime.Now.ToString();
-
     }
 }

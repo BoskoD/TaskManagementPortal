@@ -4,12 +4,11 @@ using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Caching.Memory;
-using TaskPortalApi.Interfaces;
-using TaskPortalApi.DTO.Project;
-using TaskPortalApi.Entities;
+using Contracts;
+using Entities.DataTransferObjects.Project;
+using Entities.Entities;
 
 namespace TaskPortalApi.Controllers
 {
@@ -21,10 +20,10 @@ namespace TaskPortalApi.Controllers
         private readonly IMemoryCache _memoryCache;
         private readonly IProjectRepository _projectRepository;
         private readonly ITaskRepository _taskRepository;
-        private readonly ILogger<ProjectController> _logger;
+        private readonly ILoggerManger _logger;
 
-        public ProjectController(IProjectRepository projectRepository, ITaskRepository taskRepository, 
-            ILogger<ProjectController> logger, IMemoryCache memoryCache)
+        public ProjectController(ILoggerManger logger, IProjectRepository projectRepository, 
+            ITaskRepository taskRepository, IMemoryCache memoryCache)
         {
             _projectRepository = projectRepository;
             _taskRepository = taskRepository;
@@ -37,7 +36,16 @@ namespace TaskPortalApi.Controllers
         {
             try
             {
-                _logger.LogInformation("Populating new entity...");
+                if (projectDto == null)
+                {
+                    _logger.LogError("Object sent from client is null.");
+                    return BadRequest("Owner object is null");
+                }
+                if (!ModelState.IsValid)
+                {
+                    _logger.LogError("Invalid object sent from client.");
+                    return BadRequest("Invalid model object");
+                }
                 await _projectRepository.CreateAsync(new ProjectEntity
                 {
                     PartitionKey = projectDto.Name,
@@ -45,76 +53,93 @@ namespace TaskPortalApi.Controllers
                     Description = projectDto.Description,
                     Code = projectDto.Code,
                 });
-                _logger.LogInformation("Task completed.");
+                return Ok(projectDto);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                _logger.LogError(e.Message);
-                return BadRequest();
+                _logger.LogError($"Something went wrong inside project Create action: {ex.Message}");
+                return StatusCode(500, "Internal server error");
             }
-            finally
-            {
-                _logger.LogInformation("Operation finished.");
-            }
-            return Ok(projectDto);
         }
 
         [HttpGet("readall")]
         public async Task<IActionResult> ReadAll()
         {
-            _logger.LogInformation("Pulling entities from repository");
-            if (!_memoryCache.TryGetValue("Entities", out IEnumerable<ProjectEntity> entities))
+            try
             {
-                _memoryCache.Set("Entities", await _projectRepository.GetAllAsync());
-            }
-            entities = _memoryCache.Get("Entities") as IEnumerable<ProjectEntity>;
+                _logger.LogInfo($"Returned all projects from database.");
+                if (!_memoryCache.TryGetValue("Entities", out IEnumerable<ProjectEntity> entities))
+                {
+                    _memoryCache.Set("Entities", await _projectRepository.GetAllAsync());
+                }
+                entities = _memoryCache.Get("Entities") as IEnumerable<ProjectEntity>;
 
-            if (entities == null)
+                return Ok(entities);
+            }
+            catch (Exception ex)
             {
-                _logger.LogWarning("No records found.");
+                _logger.LogError($"Something went wrong inside ReadAll action: {ex.Message}");
+                return StatusCode(500, "Internal server error");
             }
 
-            _logger.LogInformation("Print all table records.");
-            return Ok(entities);
         }
 
         [HttpGet("readbyid/{id}")]
         public async Task<ActionResult<ProjectEntity>> ReadById(string id)
         {
-            _logger.LogInformation("Pulling entities from repository...");
-            var entities = await _projectRepository.GetAllAsync();
-            ProjectEntity projectEntity;
             try
             {
-                _logger.LogInformation("Searching for the specified project...");
+                var entities = await _projectRepository.GetAllAsync();
+                ProjectEntity projectEntity;
                 projectEntity = entities.FirstOrDefault(e => e.RowKey == id);
+                if (projectEntity == null)
+                {
+                    _logger.LogError($"Project with id: {id}, hasn't been found in db.");
+                    return NotFound();
+                }
+                else
+                {
+                    _logger.LogInfo($"Returned owner with id: {id}");
+                    return Ok(projectEntity);
+                }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                _logger.LogCritical(e.Message);
-                return NotFound();
+                _logger.LogError($"Something went wrong inside ReadById action: {ex.Message}");
+                return StatusCode(500, "Internal server error");
             }
-            return Ok(projectEntity);
         }
 
         [HttpPut("update/{id}")]
         public async Task<IActionResult> Update(string id, [FromBody] UpdateProjectDto updateProjectDto)
         {
-            if (id == null)
+            try
             {
-                return NotFound();
+                if (updateProjectDto == null)
+                {
+                    _logger.LogError("Object sent from client is null.");
+                    return BadRequest("Object is null");
+                }
+                if (!ModelState.IsValid)
+                {
+                    _logger.LogError("Invalid object sent from client.");
+                    return BadRequest("Invalid model object");
+                }
+                await _projectRepository.UpdateAsync(new ProjectEntity
+                {
+                    RowKey = id,
+                    PartitionKey = updateProjectDto.Name,
+                    Description = updateProjectDto.Description,
+                    Code = updateProjectDto.Code,
+                    ETag = "*"
+                });
+                return Ok(updateProjectDto);
             }
-            _logger.LogInformation("Re-Populating existing record...");
-            await _projectRepository.UpdateAsync(new ProjectEntity
+            catch (Exception ex)
             {
-                RowKey = id,
-                PartitionKey = updateProjectDto.Name,
-                Description = updateProjectDto.Description,
-                Code = updateProjectDto.Code,
-                ETag = "*"
-            });
-            _logger.LogInformation("Task completed");
-            return Ok(updateProjectDto);
+                _logger.LogError($"Something went wrong inside Update action: {ex.Message}");
+                return StatusCode(500, "Internal server error");
+            }
         }
 
         [HttpDelete("delete/{id}")]
@@ -123,16 +148,18 @@ namespace TaskPortalApi.Controllers
             try
             {
                 var projectEntity = _projectRepository.GetAllAsync().Result.FirstOrDefault(p => p.RowKey == id);
+                if (projectEntity == null)
+                {
+                    _logger.LogError($"Project with id: {id}, hasn't been found in db.");
+                    return NotFound();
+                }
                 await _projectRepository.DeleteAsync(projectEntity);
                 return Ok();
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                _logger.LogCritical(e.Message);
-                return BadRequest("Operation did not complete!");
-            }
-            finally {
-                _logger.LogInformation("Operation completed");
+                _logger.LogError($"Something went wrong inside Delete action: {ex.Message}");
+                return StatusCode(500, "Internal server error");
             }
         }
 
@@ -141,41 +168,46 @@ namespace TaskPortalApi.Controllers
         {
             try
             {
-                _logger.LogInformation("Populating record before deletion...");
                 await _projectRepository.DeleteAsync(new ProjectEntity
                 {
                     PartitionKey = projectModel.Name,
                     RowKey = id,
                     ETag = "*"
                 });
-                _logger.LogInformation("Deleted record from repository.");
                 return Ok(projectModel);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
-            }
-            finally 
-            {
-                _logger.LogInformation("Operation completed!");
+                _logger.LogError($"Something went wrong inside DeleteProject action: {ex.Message}");
+                return StatusCode(500, "Internal server error");
             }
         }
 
         [HttpGet("readtasksfromproject/{id}")]
         public async Task<ActionResult<TaskEntity>> TasksByProject(string id)
         {
-            _logger.LogInformation("Pulling entities from repository...");
-            var entities = await _taskRepository.GetAllAsync();
-            IEnumerable<TaskEntity> taskEntities = entities.ToList();
-            _logger.LogInformation($"Entities found {taskEntities.Count()}");
-
-            var tasks = taskEntities.Where(t => t.PartitionKey.Contains(id));
-
-            if (!tasks.Any())
+            try
             {
-                _logger.LogWarning("Not Found");
+                var entities = await _taskRepository.GetAllAsync();
+                if (entities == null)
+                {
+                    _logger.LogError("Object sent from client is null.");
+                    return BadRequest("Object is null");
+                }
+                IEnumerable<TaskEntity> taskEntities = entities.ToList();
+                _logger.LogInfo($"Entities found {taskEntities.Count()}");
+                var tasks = taskEntities.Where(t => t.PartitionKey.Contains(id));
+                if (!tasks.Any())
+                {
+                    _logger.LogInfo("Object not found");
+                }
+                return Ok(tasks);
             }
-            return Ok(tasks);
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside DeleteProject action: {ex.Message}");
+                return StatusCode(500, "Internal server error");
+            }
         }
     }
 }

@@ -1,7 +1,8 @@
-﻿namespace TaskPortalApi.Entities
+﻿namespace Entities.DataTransferObjects.Task
 {
-    public class TaskEntity : Entity
+    public class UpdateTaskDto
     {
+        public string Project { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public bool IsComplete { get; set; }

@@ -1,8 +1,7 @@
-﻿namespace TaskPortalApi.DTO.Task
+﻿namespace Entities.Entities
 {
-    public class UpdateTaskDto
+    public class TaskEntity : Entity
     {
-        public string Project { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public bool IsComplete { get; set; }

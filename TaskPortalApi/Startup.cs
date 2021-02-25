@@ -1,22 +1,24 @@
 using System;
 using System.IO;
-using System.Reflection;
 using System.Text;
 using System.Text.Json.Serialization;
 using Azure.Core.Extensions;
 using Azure.Storage.Blobs;
 using Azure.Storage.Queues;
+using Contracts;
+using LoggerService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using NLog;
 using TaskPortalApi.Helpers;
-using TaskPortalApi.Interfaces;
 using TaskPortalApi.Repository;
 
 namespace TaskPortalApi
@@ -25,6 +27,7 @@ namespace TaskPortalApi
     {
         public Startup(IConfiguration configuration)
         {
+            LogManager.LoadConfiguration(string.Concat(Directory.GetCurrentDirectory(), "/nlog.config"));
             Configuration = configuration;
         }
 
@@ -32,9 +35,10 @@ namespace TaskPortalApi
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMemoryCache();
-            services.AddCors();
             services.AddControllers();
+            services.ConfigureCors();
+            services.AddMemoryCache();
+
 
             // configure strongly typed settings objects
             var appSettingsSection = Configuration.GetSection("AppSettings");
@@ -63,8 +67,9 @@ namespace TaskPortalApi
 
             // configure DI for application services
             services.AddScoped<IUserRepository, UserRepository>();
-            services.AddTransient<IProjectRepository, ProjectRepository>();
-            services.AddTransient<ITaskRepository, TaskRepository>();
+            services.AddScoped<IProjectRepository, ProjectRepository>();
+            services.AddScoped<ITaskRepository, TaskRepository>();
+            services.AddSingleton<ILoggerManger, LoggerManager>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
@@ -80,10 +85,10 @@ namespace TaskPortalApi
                     }
                 });
 
-                // Set the comments path for the Swagger JSON and UI.
-                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                c.IncludeXmlComments(xmlPath);
+                //// Set the comments path for the Swagger JSON and UI.
+                //var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                //var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                //c.IncludeXmlComments(xmlPath);
 
                 var securityScheme = new OpenApiSecurityScheme
                 {
@@ -120,30 +125,27 @@ namespace TaskPortalApi
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
-
-            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
-            // specifying the Swagger JSON endpoint.
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Task by projects API Version1.0");
                 c.RoutePrefix = string.Empty;
             });
 
-            app.UseRouting();
-
-            // global cors policy
-            app.UseCors(x => x
-                .AllowAnyOrigin()
-                .AllowAnyMethod()
-                .AllowAnyHeader());
-
-            app.UseAuthentication();
-            app.UseAuthorization();
-
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+
+            app.UseCors("CorsPolicy");
+
+
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.All
+            });
+
+            app.UseRouting();
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

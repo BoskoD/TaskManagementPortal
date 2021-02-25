@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using Entities.Entities;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using TaskPortalApi.Entities;
 
-namespace TaskPortalApi.Interfaces
+namespace Contracts
 {
     public interface IProjectRepository
     {

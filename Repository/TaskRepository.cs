@@ -1,9 +1,9 @@
-﻿using Contracts;
-using Entities.Entities;
-using Microsoft.Azure.Cosmos.Table;
+﻿using Microsoft.Azure.Cosmos.Table;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using TaskPortalApi.Entities;
+using TaskPortalApi.Interfaces;
 
 namespace TaskPortalApi.Repository
 {
@@ -24,17 +24,21 @@ namespace TaskPortalApi.Repository
         {
             return await Task.Run(() => _myTable.ExecuteQuery(new TableQuery<TaskEntity>()));
         }
+
         public async Task CreateAsync(TaskEntity myTableOperation)
         {
             await Task.Run(() => _myTable.ExecuteAsync(TableOperation.InsertOrReplace(myTableOperation)));
         }
+
         public async Task UpdateAsync(TaskEntity myTableOperation)
         {
             await _myTable.ExecuteAsync(TableOperation.Replace(myTableOperation));
         }
+
         public async Task DeleteAsync(TaskEntity myTableOperation)
         {
             await Task.Run(() => _myTable.ExecuteAsync(TableOperation.Delete(myTableOperation)));
         }
+       
     }
 }

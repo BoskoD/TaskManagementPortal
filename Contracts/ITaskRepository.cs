@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using Entities.Entities;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using TaskPortalApi.Entities;
 
-namespace TaskPortalApi.Interfaces
+namespace Contracts
 {
-    public interface ITaskRepository
+    public interface ITaskRepository 
     {
         Task<IEnumerable<TaskEntity>> GetAllAsync();
         Task CreateAsync(TaskEntity myTableOperation);

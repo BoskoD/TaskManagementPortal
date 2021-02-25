@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace TaskPortalApi.DTO.Task
+namespace Entities.DataTransferObjects.Task
 {
     public class CreateTaskDto
     {

@@ -1,4 +1,4 @@
-﻿namespace TaskPortalApi.Entities
+﻿namespace Entities.Entities
 {
     public class UserEntity
     {

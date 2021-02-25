@@ -1,11 +1,23 @@
+using Entities.Entities;
+using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
 using System.Linq;
-using TaskPortalApi.Entities;
 
 namespace TaskPortalApi.Helpers
 {
     public static class ExtensionMethods
     {
+        public static void ConfigureCors(this IServiceCollection services)
+        {
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy",
+                    builder => builder.AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader());
+            });
+        }
+
         public static IEnumerable<UserEntity> WithoutPasswords(this IEnumerable<UserEntity> users) 
         {
             if (users == null) return null;
@@ -16,7 +28,6 @@ namespace TaskPortalApi.Helpers
         public static UserEntity WithoutPassword(this UserEntity user) 
         {
             if (user == null) return null;
-
             user.Password = null;
             return user;
         }

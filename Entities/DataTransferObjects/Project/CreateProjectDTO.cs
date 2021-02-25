@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace TaskPortalApi.DTO.Project
+namespace Entities.DataTransferObjects.Project
 {
-    public class UpdateProjectDto
+    public class CreateProjectDto
     {
         public string Name { get; set; }
         public string Code { get; set; }
