@@ -1,10 +1,6 @@
-﻿using System;
-
-namespace Entities.DataTransferObjects.Project
+﻿namespace Entities.DataTransferObjects.Project
 {
-    public class DeleteProjectDto
+    public class DeleteProjectDto : BaseDto
     {
-        public string Name { get; set; }
-        public string Timestamp { get; } = DateTime.Now.ToString();
     }
 }

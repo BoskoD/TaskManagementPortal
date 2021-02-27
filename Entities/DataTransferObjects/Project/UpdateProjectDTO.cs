@@ -1,12 +1,8 @@
-﻿using System;
-
-namespace Entities.DataTransferObjects.Project
+﻿namespace Entities.DataTransferObjects.Project
 {
-    public class UpdateProjectDto
+    public class UpdateProjectDto : BaseDto
     {
-        public string Name { get; set; }
         public string Code { get; set; }
         public string Description { get; set; }
-        public string Timestamp { get; } = DateTime.Now.ToString();
     }
 }

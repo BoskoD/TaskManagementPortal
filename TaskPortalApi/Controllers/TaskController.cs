@@ -9,6 +9,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Contracts;
 using Entities.DataTransferObjects.Task;
 using Entities.Entities;
+using Entities.DataTransferObjects.Project;
 
 namespace TaskPortalApi.Controllers
 {
@@ -48,7 +49,7 @@ namespace TaskPortalApi.Controllers
                 }
                 await _taskRepository.CreateAsync(new TaskEntity
                 {
-                    PartitionKey = taskDto.Project,
+                    PartitionKey = taskDto.ProjectId,
                     RowKey = Guid.NewGuid().ToString(),
                     Name = taskDto.Name,
                     Description = taskDto.Description
@@ -84,9 +85,8 @@ namespace TaskPortalApi.Controllers
         }
 
         [HttpGet("readbyid/{id}")]
-        public async Task<ActionResult<TaskEntity>> ReadById(string id)
+        public async Task<IActionResult> ReadById(string id)
         {
-            
             try
             {
                 var entities = await _taskRepository.GetAllAsync();
@@ -128,7 +128,7 @@ namespace TaskPortalApi.Controllers
                 await _taskRepository.UpdateAsync(new TaskEntity
                 {
                     RowKey = id,
-                    PartitionKey = updateTaskDto.Project,
+                    PartitionKey = updateTaskDto.ProjectId,
                     Name = updateTaskDto.Name,
                     Description = updateTaskDto.Description,
                     IsComplete = updateTaskDto.IsComplete,

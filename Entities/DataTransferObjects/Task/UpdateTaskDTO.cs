@@ -1,9 +1,8 @@
 ﻿namespace Entities.DataTransferObjects.Task
 {
-    public class UpdateTaskDto
+    public class UpdateTaskDto : BaseDto
     {
-        public string Project { get; set; }
-        public string Name { get; set; }
+        public string ProjectId { get; set; }
         public string Description { get; set; }
         public bool IsComplete { get; set; }
     }

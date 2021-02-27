@@ -85,7 +85,7 @@ namespace TaskPortalApi.Controllers
         }
 
         [HttpGet("readbyid/{id}")]
-        public async Task<ActionResult<ProjectEntity>> ReadById(string id)
+        public async Task<IActionResult> ReadById(string id)
         {
             try
             {

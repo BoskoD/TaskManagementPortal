@@ -69,7 +69,11 @@ namespace TaskPortalApi
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IProjectRepository, ProjectRepository>();
             services.AddScoped<ITaskRepository, TaskRepository>();
+
+            // configure Logger
             services.AddSingleton<ILoggerManger, LoggerManager>();
+
+            // configure Swagger
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo

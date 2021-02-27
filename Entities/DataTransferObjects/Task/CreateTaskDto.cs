@@ -1,17 +1,11 @@
-﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Entities.DataTransferObjects.Task
 {
-    public class CreateTaskDto
+    public class CreateTaskDto : BaseDto
     {
-        [Required]
-        public string Project { get; set; }
-        public string Id { get; internal set; }
-        [Required]
-        public string Name { get; set; }
+        [Required(ErrorMessage = "ProjectId is required")]
+        public string ProjectId { get; set; }
         public string Description { get; set; }
-        [DefaultValue(false)]
-        public bool IsComplete { get; set; }
     }
 }
