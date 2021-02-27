@@ -52,6 +52,7 @@ To access to our service we need to implement Rest API.
 - [x] NLog
 - [x] NET5
 - [x] Angular
+- [x] PSScripts
 - [ ] Mapping (AutoMapper)
 - [ ] Docker
 - [ ] File storage: Upload/Download
