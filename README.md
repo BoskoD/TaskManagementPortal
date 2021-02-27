@@ -1,6 +1,5 @@
 # TaskManagementPortal
 
-## Implementing a task storage by projects. 
 “Task” – is an instance which contains at least 3 fields listed below:
 1.	Id
 2.	Task name
@@ -17,7 +16,14 @@ Each task should be a part of only one project. Project – is an instance which
 You need to deploy your service in Microsoft Azure and use tables (Azure Table Storage) for storing your projects and tasks. 
 To access to your service you need to implement Rest API.
 
-# TODO
+## Technologies
+
+- .NET Core
+- Azure Table Storage
+- Angular
+
+## TODO
+
 - [x] Async/Await
 - [x] REST
 - [x] JWT
