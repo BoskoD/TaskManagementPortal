@@ -6,6 +6,11 @@
 2.	Task name
 3.	Task description
 
+“Project” – is an instance which contains at least 3 fields listed below:
+1. Id
+2. Project name
+3. Code base
+
 ### Solution 
 We should have the ability to easily add new fields in Task entity. 
 Each task should be a part of only one project. Project – is an instance which contains name, id and code (and also keep Tasks entities).
