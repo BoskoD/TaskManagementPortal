@@ -1,5 +1,7 @@
 # TaskManagementPortal
 
+WEB: https://taskportalapi20210227224026.azurewebsites.net/index.html
+
 “Task” – is an instance which contains at least 3 fields listed below:
 1.	Id
 2.	Task name
@@ -19,7 +21,7 @@ To access to our service we need to implement Rest API.
 
 ## Technologies
 
-- .NET Core
+- .NET Core (5.0)
 - Azure Table Storage
 - Angular
 
