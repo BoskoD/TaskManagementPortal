@@ -19,7 +19,7 @@ To access to our service we need to implement Rest API.
 
 ## Technologies
 
-- .NET Core
+- .NET Core (5.0)
 - Azure Table Storage
 - Angular
 
