@@ -73,7 +73,7 @@ namespace TaskPortalApi.Controllers
                 _logger.LogInfo($"Returned all projects from database.");
                 if (!_memoryCache.TryGetValue("Entities", out IEnumerable<TaskEntity> entities))
                 {
-                    _memoryCache.Set("Entities", await _taskRepository.GetAllAsync());
+                    _memoryCache.Set("Entities", await _taskRepository.ReadAllASync());
                 }
                 entities = _memoryCache.Get("Entities") as IEnumerable<TaskEntity>;
 
@@ -91,10 +91,10 @@ namespace TaskPortalApi.Controllers
         {
             try
             {
-                var entities = await _taskRepository.GetAllAsync();
+                var entities = await _taskRepository.ReadAllASync();
                 TaskEntity taskEntity;
                 taskEntity = entities.FirstOrDefault(e => e.RowKey == id);
-                if (taskEntity == null)
+                if (taskEntity == null || taskEntity.Deleted)
                 {
                     _logger.LogError($"Task with id: {id}, hasn't been found in db.");
                     return NotFound();
@@ -150,7 +150,7 @@ namespace TaskPortalApi.Controllers
         {
             try
             {
-                var taskEntity = _taskRepository.GetAllAsync().Result.FirstOrDefault(p => p.RowKey == id);
+                var taskEntity = _taskRepository.ReadAllASync().Result.FirstOrDefault(p => p.RowKey == id);
                 if (taskEntity == null)
                 {
                     _logger.LogError($"Task with id: {id}, hasn't been found in db.");
@@ -171,7 +171,7 @@ namespace TaskPortalApi.Controllers
         {
             try
             {
-                var entities = await _projectRepository.GetAllAsync();
+                var entities = await _projectRepository.ReadAllASync();
                 if (entities == null)
                 {
                     _logger.LogError("No records found.");

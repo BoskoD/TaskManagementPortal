@@ -5,7 +5,7 @@ namespace Contracts
 {
     public interface IRepositoryBase<T>
     {
-        Task<IEnumerable<T>> GetAllAsync();
+        Task<IEnumerable<T>> ReadAllASync();
         Task CreateAsync(T myTableOperation);
         Task UpdateAsync(T myTableOperation);
         Task DeleteAsync(T myTableOperation);

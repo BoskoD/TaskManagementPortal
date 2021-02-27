@@ -20,7 +20,7 @@ namespace TaskPortalApi.Repository
             _myTable.CreateIfNotExistsAsync();
         }
 
-        public async Task<IEnumerable<TaskEntity>> GetAllAsync()
+        public async Task<IEnumerable<TaskEntity>> ReadAllASync()
         {
             return await Task.Run(() => _myTable.ExecuteQuery(new TableQuery<TaskEntity>()));
         }
