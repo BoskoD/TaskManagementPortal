@@ -45,7 +45,6 @@ API documentation V1: https://taskportalapi20210227224026.azurewebsites.net/inde
 - [x] Scoped over Transient
 - [x] Logging
 - [x] StyleCop
-- [x] API Versioning
 - [x] API Versioning with Swagger
 - [x] Caching
 - [x] Kestrel
