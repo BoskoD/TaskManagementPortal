@@ -78,7 +78,6 @@ namespace TaskPortalApi
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
-
                     Version = "v1",
                     Title = "Task Management Portal",
                     Description = "Akvelon task. Following tasks by projects.",

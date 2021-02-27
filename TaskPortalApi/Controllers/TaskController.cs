@@ -23,8 +23,10 @@ namespace TaskPortalApi.Controllers
         private readonly IProjectRepository _projectRepository;
         private readonly ILoggerManger _logger;
 
-        public TaskController(ILoggerManger logger, ITaskRepository taskRepository, 
-            IProjectRepository projectRepository, IMemoryCache memoryCache)
+        public TaskController(ILoggerManger logger, 
+            ITaskRepository taskRepository, 
+            IProjectRepository projectRepository, 
+            IMemoryCache memoryCache)
         {
             _taskRepository = taskRepository;
             _projectRepository = projectRepository; 

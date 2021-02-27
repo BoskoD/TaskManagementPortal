@@ -14,7 +14,7 @@ namespace TaskPortalApi.Repository
 {
     public class UserRepository : IUserRepository
     {
-        // users hardcoded for simplicity, store in a db with hashed passwords in production applications
+        // users hardcoded for simplicity
         private readonly List<UserEntity> _users = new List<UserEntity>
         { 
             new UserEntity { Id = 1, FirstName = "Bosko", LastName = "Danilovic", Username = "admin", Password = "admin", Role = RoleEntity.Admin },
