@@ -64,6 +64,10 @@ API documentation V1: https://taskportalapi20210227224026.azurewebsites.net/inde
 - [ ] Moq
  
  
-
+## Documentation
+- https://docs.microsoft.com/en-us/dotnet/api/overview/azure/storage
+- https://docs.microsoft.com/en-us/azure/storage/tables/table-storage-how-to-use-powershell
+- https://nlog-project.org/
+- https://angular.io/
 
 
