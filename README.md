@@ -41,7 +41,6 @@ API documentation V1: https://taskportalapi20210227224026.azurewebsites.net/inde
 - [x] CORS
 - [x] Error Handling, Global Exception
 - [x] HealthCheck
-- [x] Http
 - [x] Soft Delete
 - [x] Scoped over Transient
 - [x] Logging
