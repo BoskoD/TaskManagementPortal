@@ -60,7 +60,6 @@ API documentation V1: https://taskportalapi20210227224026.azurewebsites.net/inde
 - [ ] File storage: Upload/Download
 - [ ] Kubernetes / SF
 - [ ] BulkInsert, BulkUpdate
-- [ ] File manager
 - [ ] Material design
 - [ ] StorageTable enum conversion
 - [ ] Unit Test
