@@ -1,9 +1,9 @@
-using Entities.Entities;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
 using System.Linq;
+using TaskManagementPortal.Entities.Entities;
 
-namespace TaskPortalApi.Helpers
+namespace TaskManagementPortal.TaskPortalApi.Helpers
 {
     public static class ExtensionMethods
     {

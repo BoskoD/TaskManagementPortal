@@ -1,11 +1,11 @@
-﻿using Contracts;
-using Entities.Entities;
-using Microsoft.Azure.Cosmos.Table;
+﻿using Microsoft.Azure.Cosmos.Table;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using TaskManagementPortal.Contracts;
+using TaskManagementPortal.Entities.Entities;
 
-namespace TaskPortalApi.Repository
+namespace TaskManagementPortal.TaskPortalApi.Repository
 {
     public class ProjectRepository : IProjectRepository
     {

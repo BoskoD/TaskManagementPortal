@@ -1,6 +1,6 @@
-﻿using Entities.Entities;
+﻿using TaskManagementPortal.Entities.Entities;
 
-namespace Contracts
+namespace TaskManagementPortal.Contracts
 {
     public interface IProjectRepository : IRepositoryBase<ProjectEntity>
     {

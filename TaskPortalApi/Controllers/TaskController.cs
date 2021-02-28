@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Caching.Memory;
-using Contracts;
-using Entities.DataTransferObjects.Task;
-using Entities.Entities;
-using Entities.DataTransferObjects.Project;
+using TaskManagementPortal.Contracts;
+using TaskManagementPortal.Entities.DataTransferObjects.Task;
+using TaskManagementPortal.Entities.Entities;
+using TaskManagementPortal.Entities.DataTransferObjects.Project;
 
-namespace TaskPortalApi.Controllers
+namespace TaskManagementPortal.TaskPortalApi.Controllers
 {
     [ApiController]
     [Authorize]

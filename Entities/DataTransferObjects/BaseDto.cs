@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Entities.DataTransferObjects
+namespace TaskManagementPortal.Entities.DataTransferObjects
 {
     public class BaseDto
     {

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Hosting;
 using System.Security.Authentication;
 
-namespace TaskPortalApi
+namespace TaskManagementPortal.TaskPortalApi
 {
     public class Program
     {

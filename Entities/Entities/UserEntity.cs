@@ -1,4 +1,4 @@
-﻿namespace Entities.Entities
+﻿namespace TaskManagementPortal.Entities.Entities
 {
     public class UserEntity
     {

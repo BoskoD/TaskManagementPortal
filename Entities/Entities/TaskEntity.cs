@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace Entities.Entities
+namespace TaskManagementPortal.Entities.Entities
 {
     public class TaskEntity : Entity
     {

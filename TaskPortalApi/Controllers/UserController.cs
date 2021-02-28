@@ -1,11 +1,11 @@
-﻿using Contracts;
-using Entities.Entities;
-using Entities.Models;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using TaskManagementPortal.Contracts;
+using TaskManagementPortal.Entities.Entities;
+using TaskManagementPortal.Entities.Models;
 
-namespace TaskPortalApi.Controllers
+namespace TaskManagementPortal.TaskPortalApi.Controllers
 {
     [Authorize]
     [ApiController]

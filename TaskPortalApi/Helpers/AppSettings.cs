@@ -1,4 +1,4 @@
-namespace TaskPortalApi.Helpers
+namespace TaskManagementPortal.TaskPortalApi.Helpers
 {
     public class AppSettings
     {

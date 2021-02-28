@@ -4,13 +4,13 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
-using Contracts;
-using Entities.Entities;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using TaskPortalApi.Helpers;
+using TaskManagementPortal.Contracts;
+using TaskManagementPortal.Entities.Entities;
+using TaskManagementPortal.TaskPortalApi.Helpers;
 
-namespace TaskPortalApi.Repository
+namespace TaskManagementPortal.TaskPortalApi.Repository
 {
     public class UserRepository : IUserRepository
     {

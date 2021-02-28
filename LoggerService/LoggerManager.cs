@@ -1,7 +1,7 @@
-﻿using Contracts;
-using NLog;
+﻿using NLog;
+using TaskManagementPortal.Contracts;
 
-namespace LoggerService
+namespace TaskManagementPortal.LoggerService
 {
     public class LoggerManager : ILoggerManger
     {

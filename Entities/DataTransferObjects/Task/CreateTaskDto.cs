@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Entities.DataTransferObjects.Task
+namespace TaskManagementPortal.Entities.DataTransferObjects.Task
 {
     public class CreateTaskDto : BaseDto
     {

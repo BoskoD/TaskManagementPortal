@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Entities.Models
+namespace TaskManagementPortal.Entities.Models
 {
     public class AuthenticateModel
     {

@@ -5,8 +5,6 @@ using System.Text.Json.Serialization;
 using Azure.Core.Extensions;
 using Azure.Storage.Blobs;
 using Azure.Storage.Queues;
-using Contracts;
-using LoggerService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -18,10 +16,13 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using NLog;
-using TaskPortalApi.Helpers;
-using TaskPortalApi.Repository;
+using TaskManagementPortal.Contracts;
+using TaskManagementPortal.LoggerService;
+using TaskManagementPortal.TaskPortalApi.Helpers;
+using TaskManagementPortal.TaskPortalApi.Repository;
 
-namespace TaskPortalApi
+
+namespace TaskManagementPortal.TaskPortalApi
 {
     public class Startup
     {

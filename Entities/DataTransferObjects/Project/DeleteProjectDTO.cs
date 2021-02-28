@@ -1,4 +1,4 @@
-﻿namespace Entities.DataTransferObjects.Project
+﻿namespace TaskManagementPortal.Entities.DataTransferObjects.Project
 {
     public class DeleteProjectDto : BaseDto
     {

@@ -1,4 +1,4 @@
-﻿namespace Entities.Enumerations
+﻿namespace TaskManagementPortal.Entities.Enumerations
 {
     public enum TaskType
     {

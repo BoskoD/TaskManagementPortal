@@ -1,4 +1,4 @@
-﻿namespace Contracts
+﻿namespace TaskManagementPortal.Contracts
 {
     public interface ILoggerManger
     {
