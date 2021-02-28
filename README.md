@@ -30,6 +30,8 @@ API documentation V1: https://taskportalapi20210227224026.azurewebsites.net/inde
 
 - [x] Async/Await
 - [x] REST
+- [x] KISS
+- [x] SOLID
 - [x] JWT
 - [x] Repository & Generic Repository
 - [x] API Specification, API Definition (Swagger)
@@ -57,7 +59,7 @@ API documentation V1: https://taskportalapi20210227224026.azurewebsites.net/inde
 - [ ] Docker
 - [ ] File storage: Upload/Download
 - [ ] Kubernetes / SF
-- [ ] BulkInsert, BulkUpdate, Async method for IRepository
+- [ ] BulkInsert, BulkUpdate
 - [ ] Material design
 - [ ] StorageTable enum conversion
 - [ ] Unit Test
