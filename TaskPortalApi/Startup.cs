@@ -68,8 +68,8 @@ namespace TaskManagementPortal.TaskPortalApi
 
             // configure DI for application services
             services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<IProjectRepository, ProjectRepository>();
-            services.AddScoped<ITaskRepository, TaskRepository>();
+            services.AddTransient<IProjectRepository, ProjectRepository>();
+            services.AddTransient<ITaskRepository, TaskRepository>();
 
             // configure Logger
             services.AddSingleton<ILoggerManger, LoggerManager>();
