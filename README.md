@@ -33,6 +33,7 @@ API documentation V1: https://taskportalapi20210227224026.azurewebsites.net/inde
 - [x] JWT
 - [x] Repository & Generic Repository
 - [x] API Specification, API Definition (Swagger)
+- [x] Postman
 - [x] Middleware
 - [x] Authentication
 - [x] Authorization
