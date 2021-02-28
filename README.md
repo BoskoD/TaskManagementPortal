@@ -60,6 +60,8 @@ API documentation V1: https://taskportalapi20210227224026.azurewebsites.net/inde
 - [ ] BulkInsert, BulkUpdate, Async method for IRepository
 - [ ] Material design
 - [ ] StorageTable enum conversion
+- [ ] Unit Test
+- [ ] Moq
  
  
 
