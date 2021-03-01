@@ -186,8 +186,8 @@ namespace TaskManagementPortal.TaskPortalApi.Controllers
             }
         }
 
-        [HttpGet("readtasksfromproject/{id}")]
-        public async Task<ActionResult<TaskEntity>> TasksByProject(string id)
+        [HttpGet("readtasksfromproject/{name}")]
+        public async Task<ActionResult<TaskEntity>> TasksByProject(string name)
         {
             try
             {
@@ -199,7 +199,7 @@ namespace TaskManagementPortal.TaskPortalApi.Controllers
                 }
                 IEnumerable<TaskEntity> taskEntities = entities.ToList();
                 _logger.LogInfo($"Entities found {taskEntities.Count()}");
-                var tasks = taskEntities.Where(t => t.PartitionKey.Contains(id));
+                var tasks = taskEntities.Where(t => t.PartitionKey.Contains(name));
                 if (!tasks.Any())
                 {
                     _logger.LogInfo("Object not found");

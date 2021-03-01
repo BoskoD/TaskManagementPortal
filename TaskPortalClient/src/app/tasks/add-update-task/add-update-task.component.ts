@@ -27,9 +27,9 @@ export class AddUpdateTaskComponent implements OnInit {
     this.service.readAllProjectNames().subscribe((data:any)=>{
       this.ProjectsList=data;
 
-      this.rowKey = data.id;
+      this.rowKey = this.task.rowKey,
       this.name=this.task.name;
-      this.partitionKey=this.task.partitionKey;
+      this.partitionKey=data.name
       this.description=this.task.description;
       this.isComplete=this.task.isComplete;
 

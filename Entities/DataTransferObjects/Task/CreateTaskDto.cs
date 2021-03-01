@@ -1,11 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using TaskManagementPortal.Entities.Entities;
 
 namespace TaskManagementPortal.Entities.DataTransferObjects.Task
 {
     public class CreateTaskDto : BaseDto
     {
-        [Required(ErrorMessage = "ProjectId is required")]
-        public string ProjectId { get; set; }
+        [Required(ErrorMessage = "Project name is required")]
+        public ProjectEntity Project { get; set; }
         public string Description { get; set; }
     }
 }

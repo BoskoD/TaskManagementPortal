@@ -51,8 +51,8 @@ namespace TaskManagementPortal.TaskPortalApi.Controllers
                 }
                 await _taskRepository.CreateAsync(new TaskEntity
                 {
-                    PartitionKey = taskDto.ProjectId,
-                    RowKey = Guid.NewGuid().ToString(),
+                    PartitionKey = taskDto.Project.PartitionKey,
+                    RowKey = Guid.NewGuid().ToString().Substring(1,7),
                     Name = taskDto.Name,
                     Description = taskDto.Description
                 });
@@ -130,7 +130,7 @@ namespace TaskManagementPortal.TaskPortalApi.Controllers
                 await _taskRepository.UpdateAsync(new TaskEntity
                 {
                     RowKey = id,
-                    PartitionKey = updateTaskDto.ProjectId,
+                    PartitionKey = updateTaskDto.Project.PartitionKey,
                     Name = updateTaskDto.Name,
                     Description = updateTaskDto.Description,
                     IsComplete = updateTaskDto.IsComplete,
