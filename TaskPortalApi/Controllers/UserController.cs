@@ -9,7 +9,7 @@ namespace TaskManagementPortal.TaskPortalApi.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/")]
     public class UserController : ControllerBase
     {
         private readonly IUserRepository _userRepository;
@@ -42,8 +42,8 @@ namespace TaskManagementPortal.TaskPortalApi.Controllers
         }
 
         [Authorize(Roles = RoleEntity.Admin)]
-        [HttpGet]
-        public IActionResult GetAll()
+        [HttpGet("users")]
+        public IActionResult GetAllUsers()
         {
             try
             {
@@ -57,8 +57,8 @@ namespace TaskManagementPortal.TaskPortalApi.Controllers
             }
         }
 
-        [HttpGet("{id}")]
-        public IActionResult GetById(int id)
+        [HttpGet("user/{id}")]
+        public IActionResult GetUserById(int id)
         {
             try
             {

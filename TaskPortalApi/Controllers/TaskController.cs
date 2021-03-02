@@ -9,33 +9,29 @@ using Microsoft.Extensions.Caching.Memory;
 using TaskManagementPortal.Contracts;
 using TaskManagementPortal.Entities.DataTransferObjects.Task;
 using TaskManagementPortal.Entities.Entities;
-using TaskManagementPortal.Entities.DataTransferObjects.Project;
 
 namespace TaskManagementPortal.TaskPortalApi.Controllers
 {
     [ApiController]
     [Authorize]
-    [Route("api/[controller]")]
+    [Route("api/")]
     public class TaskController : ControllerBase
     {
         private readonly IMemoryCache _memoryCache;
         private readonly ITaskRepository _taskRepository;
-        private readonly IProjectRepository _projectRepository;
         private readonly ILoggerManger _logger;
 
         public TaskController(ILoggerManger logger, 
             ITaskRepository taskRepository, 
-            IProjectRepository projectRepository, 
             IMemoryCache memoryCache)
         {
             _taskRepository = taskRepository;
-            _projectRepository = projectRepository; 
             _logger = logger;
             _memoryCache = memoryCache;
         }
 
-        [HttpPost("create")]
-        public async Task<IActionResult> Create([FromBody] CreateTaskDto taskDto)
+        [HttpPost("task")]
+        public async Task<IActionResult> CreateTask([FromBody] CreateTaskDto taskDto)
         {
             try
             {
@@ -65,8 +61,8 @@ namespace TaskManagementPortal.TaskPortalApi.Controllers
             }
         }
 
-        [HttpGet("readall")]
-        public async Task<IActionResult> ReadAll()
+        [HttpGet("tasks")]
+        public async Task<IActionResult> GetAllTasks()
         {
             try
             {
@@ -86,8 +82,8 @@ namespace TaskManagementPortal.TaskPortalApi.Controllers
             }
         }
 
-        [HttpGet("readbyid/{id}")]
-        public async Task<IActionResult> ReadById(string id)
+        [HttpGet("task/{id}")]
+        public async Task<IActionResult> GetTaskById(string id)
         {
             try
             {
@@ -112,8 +108,8 @@ namespace TaskManagementPortal.TaskPortalApi.Controllers
             }
         }
 
-        [HttpPut("update/{id}")]
-        public async Task<IActionResult> Update(string id, [FromBody] UpdateTaskDto updateTaskDto)
+        [HttpPut("task/{id}")]
+        public async Task<IActionResult> UpdateTask(string id, [FromBody] UpdateTaskDto updateTaskDto)
         {
             try
             {
@@ -145,8 +141,8 @@ namespace TaskManagementPortal.TaskPortalApi.Controllers
             }
         }
 
-        [HttpDelete("delete/{id}")]
-        public async Task<IActionResult> Delete(string id)
+        [HttpDelete("task/{id}")]
+        public async Task<IActionResult> DeleteTask(string id)
         {
             try
             {
@@ -166,27 +162,29 @@ namespace TaskManagementPortal.TaskPortalApi.Controllers
             }
         }
 
-        [HttpGet("readallprojectnames")]
-        public async Task<IActionResult> GetAllProjectNames()
+        [HttpGet("project/{name}/tasks")]
+        public async Task<ActionResult<TaskEntity>> GetTasksByProject(string name)
         {
             try
             {
-                var entities = await _projectRepository.ReadAllASync();
+                var entities = await _taskRepository.ReadAllASync();
                 if (entities == null)
                 {
-                    _logger.LogError("No records found.");
-                    return NotFound();
+                    _logger.LogError("Object sent from client is null.");
+                    return BadRequest("Object is null");
                 }
-                var model = entities.Select(x => new ReadProjectNamesDto
+                IEnumerable<TaskEntity> taskEntities = entities.ToList();
+                _logger.LogInfo($"Entities found {taskEntities.Count()}");
+                var tasks = taskEntities.Where(t => t.PartitionKey.Contains(name));
+                if (!tasks.Any())
                 {
-                    Id = x.RowKey,
-                    Name = x.PartitionKey
-                });
-                return Ok(model);
+                    _logger.LogInfo("Object not found");
+                }
+                return Ok(tasks);
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Something went wrong inside GetAllProjectNames action: {ex.Message}");
+                _logger.LogError($"Something went wrong inside DeleteProject action: {ex.Message}");
                 return StatusCode(500, "Internal server error");
             }
         }

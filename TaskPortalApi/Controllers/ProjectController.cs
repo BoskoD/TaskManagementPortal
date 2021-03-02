@@ -14,26 +14,23 @@ namespace TaskManagementPortal.TaskPortalApi.Controllers
 {
     [ApiController]
     [Authorize]
-    [Route("api/[controller]")]
+    [Route("api/")]
     public class ProjectController : ControllerBase
     {
         private readonly IMemoryCache _memoryCache;
         private readonly IProjectRepository _projectRepository;
-        private readonly ITaskRepository _taskRepository;
         private readonly ILoggerManger _logger;
 
         public ProjectController(ILoggerManger logger, 
             IProjectRepository projectRepository, 
-            ITaskRepository taskRepository, 
             IMemoryCache memoryCache)
         {
             _projectRepository = projectRepository;
-            _taskRepository = taskRepository;
             _logger = logger;
             _memoryCache = memoryCache;
         }
 
-        [HttpPost("create")]
+        [HttpPost("project")]
         public async Task<IActionResult> Create([FromBody] CreateProjectDto projectDto)
         {
             try
@@ -64,8 +61,8 @@ namespace TaskManagementPortal.TaskPortalApi.Controllers
             }
         }
 
-        [HttpGet("readall")]
-        public async Task<IActionResult> ReadAll()
+        [HttpGet("projects")]
+        public async Task<IActionResult> GetAllProjects()
         {
             try
             {
@@ -86,8 +83,8 @@ namespace TaskManagementPortal.TaskPortalApi.Controllers
 
         }
 
-        [HttpGet("readbyid/{id}")]
-        public async Task<IActionResult> ReadById(string id)
+        [HttpGet("project/{id}")]
+        public async Task<IActionResult> GetProjectById(string id)
         {
             try
             {
@@ -113,7 +110,7 @@ namespace TaskManagementPortal.TaskPortalApi.Controllers
             }
         }
 
-        [HttpPut("update/{id}")]
+        [HttpPut("project/{id}")]
         public async Task<IActionResult> Update(string id, [FromBody] UpdateProjectDto updateProjectDto)
         {
             try
@@ -145,7 +142,7 @@ namespace TaskManagementPortal.TaskPortalApi.Controllers
             }
         }
 
-        [HttpDelete("delete/{id}")]
+        [HttpDelete("project/{id}")]
         public async Task<IActionResult> Delete(string id)
         {
             try
@@ -162,53 +159,6 @@ namespace TaskManagementPortal.TaskPortalApi.Controllers
             catch (Exception ex)
             {
                 _logger.LogError($"Something went wrong inside Delete action: {ex.Message}");
-                return StatusCode(500, "Internal server error");
-            }
-        }
-
-        [HttpDelete("deleteproject")]
-        public async Task<IActionResult> DeleteProject(string id, [FromBody] DeleteProjectDto projectModel)
-        {
-            try
-            {
-                await _projectRepository.DeleteAsync(new ProjectEntity
-                {
-                    PartitionKey = projectModel.Name,
-                    RowKey = id,
-                    ETag = "*"
-                });
-                return Ok(projectModel);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Something went wrong inside DeleteProject action: {ex.Message}");
-                return StatusCode(500, "Internal server error");
-            }
-        }
-
-        [HttpGet("readtasksfromproject/{name}")]
-        public async Task<ActionResult<TaskEntity>> TasksByProject(string name)
-        {
-            try
-            {
-                var entities = await _taskRepository.ReadAllASync();
-                if (entities == null)
-                {
-                    _logger.LogError("Object sent from client is null.");
-                    return BadRequest("Object is null");
-                }
-                IEnumerable<TaskEntity> taskEntities = entities.ToList();
-                _logger.LogInfo($"Entities found {taskEntities.Count()}");
-                var tasks = taskEntities.Where(t => t.PartitionKey.Contains(name));
-                if (!tasks.Any())
-                {
-                    _logger.LogInfo("Object not found");
-                }
-                return Ok(tasks);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Something went wrong inside DeleteProject action: {ex.Message}");
                 return StatusCode(500, "Internal server error");
             }
         }
