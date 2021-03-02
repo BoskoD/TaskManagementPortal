@@ -44,7 +44,6 @@ API documentation V1: https://taskportalapi20210227224026.azurewebsites.net/inde
 - [x] Error Handling, Global Exception
 - [x] HealthCheck
 - [x] Soft Delete
-- [x] Scoped over Transient
 - [x] Logging
 - [x] StyleCop
 - [x] API Versioning with Swagger
