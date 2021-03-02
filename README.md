@@ -64,6 +64,8 @@ API documentation V1: https://taskportalapi20210227224026.azurewebsites.net/inde
 - [ ] StorageTable enum conversion
 - [ ] Unit Test
 - [ ] Moq
+- [ ] Cancellation Token
+- [ ] Pagination
  
  
 ## Documentation
