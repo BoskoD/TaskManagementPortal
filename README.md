@@ -54,7 +54,7 @@ API documentation V1: https://taskportalapi20210227224026.azurewebsites.net/inde
 - [x] NET5
 - [x] Angular
 - [x] PSScripts
-- [ ] Mapping (AutoMapper)
+- [x] Mapping (AutoMapper)
 - [ ] Docker
 - [ ] File storage: Upload/Download
 - [ ] Kubernetes / SF
