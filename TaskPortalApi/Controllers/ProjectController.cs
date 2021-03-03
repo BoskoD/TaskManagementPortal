@@ -1,9 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
+using AutoMapper;
 using System.Linq;
-using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Caching.Memory;
 using TaskManagementPortal.Contracts;
@@ -13,21 +14,24 @@ using TaskManagementPortal.Entities.Entities;
 namespace TaskManagementPortal.TaskPortalApi.Controllers
 {
     [ApiController]
-    [Authorize]
+    //[Authorize]
     [Route("api/")]
     public class ProjectController : ControllerBase
     {
         private readonly IMemoryCache _memoryCache;
         private readonly IProjectRepository _projectRepository;
         private readonly ILoggerManger _logger;
+        private readonly IMapper _mapper;
 
         public ProjectController(ILoggerManger logger, 
             IProjectRepository projectRepository, 
-            IMemoryCache memoryCache)
+            IMemoryCache memoryCache,
+            IMapper mapper)
         {
             _projectRepository = projectRepository;
             _logger = logger;
             _memoryCache = memoryCache;
+            _mapper = mapper;
         }
 
         [HttpPost("project")]
@@ -45,6 +49,7 @@ namespace TaskManagementPortal.TaskPortalApi.Controllers
                     _logger.LogError("Invalid object sent from client.");
                     return BadRequest("Invalid model object");
                 }
+
                 await _projectRepository.CreateAsync(new ProjectEntity
                 {
                     PartitionKey = projectDto.Name,
@@ -73,7 +78,16 @@ namespace TaskManagementPortal.TaskPortalApi.Controllers
                 }
                 entities = _memoryCache.Get("Entities") as IEnumerable<ProjectEntity>;
 
-                return Ok(entities);
+                ProjectDto presentation = null;
+                List<ProjectDto> projectDtos = new List<ProjectDto>();
+
+                foreach (var entity in entities)
+                {
+                    presentation = _mapper.Map<ProjectDto>(entity);
+                    projectDtos.Add(presentation);
+                }
+
+                return Ok(projectDtos);
             }
             catch (Exception ex)
             {
@@ -89,8 +103,10 @@ namespace TaskManagementPortal.TaskPortalApi.Controllers
             try
             {
                 var entities = await _projectRepository.ReadAllASync();
-                ProjectEntity projectEntity;
-                projectEntity = entities.FirstOrDefault(e => e.RowKey == id);
+                var projectEntity = entities.FirstOrDefault(e => e.RowKey == id);
+
+                ProjectDto presentation = null;
+                presentation = _mapper.Map<ProjectDto>(projectEntity);
 
                 if (projectEntity == null || projectEntity.Deleted)
                 {
@@ -100,7 +116,7 @@ namespace TaskManagementPortal.TaskPortalApi.Controllers
                 else
                 {
                     _logger.LogInfo($"Returned owner with id: {id}");
-                    return Ok(projectEntity);
+                    return Ok(presentation);
                 }
             }
             catch (Exception ex)
