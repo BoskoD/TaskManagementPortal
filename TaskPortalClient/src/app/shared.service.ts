@@ -11,42 +11,34 @@ export class SharedService {
   constructor(private http:HttpClient) { }
 
   getProjectsList():Observable<any[]>{
-    return this.http.get<any>(`${baseUrl}project/readall`);
+    return this.http.get<any>(`${baseUrl}projects`);
   }
 
   addProject(val:any){
-    return this.http.post(`${baseUrl}project/create`, val);
+    return this.http.post(`${baseUrl}project`, val);
   }
 
   updateProject(val:any){
-    return this.http.put(`${baseUrl}project/update/${val.rowKey}`, val);
+    return this.http.put(`${baseUrl}project/${val.rowKey}`, val);
   }
 
   deleteProject(val:any){
-    return this.http.delete(`${baseUrl}project/delete/` + val);
-  }
-
-  getAllTasksInAProject(val: any){
-    return this.http.get(`${baseUrl}project/taskbyproject`, val);
+    return this.http.delete(`${baseUrl}project/` + val);
   }
 
   getTasksList():Observable<any[]>{
-    return this.http.get<any>(`${baseUrl}task/readall`);
+    return this.http.get<any>(`${baseUrl}tasks`);
   }
 
   addTask(val:any){
-    return this.http.post(`${baseUrl}task/create`, val);
+    return this.http.post(`${baseUrl}task`, val);
   }
 
   updateTask(val:any){
-    return this.http.put(`${baseUrl}task/update/${val.rowKey}`, val);
+    return this.http.put(`${baseUrl}task/${val.rowKey}`, val);
   }
 
   deleteTask(val:any){
-    return this.http.delete(`${baseUrl}task/delete/` + val);
-  }
-
-  readAllProjectNames():Observable<any[]>{
-    return this.http.get<any[]>(`${baseUrl}task/readallprojectnames`);
+    return this.http.delete(`${baseUrl}task/` + val);
   }
 }

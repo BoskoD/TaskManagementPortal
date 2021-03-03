@@ -22,7 +22,7 @@ namespace TaskManagementPortal.TaskPortalApi.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost("authenticate")]
+        [HttpPost("user/authenticate")]
         public IActionResult Authenticate([FromBody] AuthenticateModel model)
         {
             try

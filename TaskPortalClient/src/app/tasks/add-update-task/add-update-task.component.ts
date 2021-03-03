@@ -17,19 +17,20 @@ export class AddUpdateTaskComponent implements OnInit {
   description: string;
   isComplete: boolean;
 
-  ProjectsList:any=[];
+  ProjectsList:{ [key: string]: string } = {};
+
 
   ngOnInit(): void {
     this.loadProjectsList();
   }
 
   loadProjectsList(){
-    this.service.readAllProjectNames().subscribe((data:any)=>{
+    this.service.getProjectsList().subscribe((data:any)=>{
       this.ProjectsList=data;
 
       this.rowKey = this.task.rowKey,
       this.name=this.task.name;
-      this.partitionKey=data.name
+      this.partitionKey=data.rowKey
       this.description=this.task.description;
       this.isComplete=this.task.isComplete;
 

@@ -19,7 +19,7 @@ export class ShowTasksComponent implements OnInit {
   task: any;
 
   loadProjectsList(){
-    this.service.readAllProjectNames().subscribe((data:any)=>{
+    this.service.getProjectsList().subscribe((data:any)=>{
       this.ProjectsList=data;
 
       console.log(data);

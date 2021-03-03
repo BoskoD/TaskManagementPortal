@@ -6,8 +6,8 @@
         <div class="col-sm-10" style="padding-bottom: 5px;">
            <select class="form-control" [(ngModel)]="partitionKey">
                <option>--Select--</option>
-               <option *ngFor="let projectName of ProjectsList">
-                   {{ projectName.name }}
+               <option *ngFor="let projectInfo of ProjectsList">
+                   {{ projectInfo.rowKey }}
                </option>
            </select>
         </div>
