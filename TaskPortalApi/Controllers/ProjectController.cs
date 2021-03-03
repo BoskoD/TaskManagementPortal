@@ -31,7 +31,7 @@ namespace TaskManagementPortal.TaskPortalApi.Controllers
         }
 
         [HttpPost("project")]
-        public async Task<IActionResult> Create([FromBody] CreateProjectDto projectDto)
+        public async Task<IActionResult> CreateProject([FromBody] CreateProjectDto projectDto)
         {
             try
             {
@@ -111,7 +111,7 @@ namespace TaskManagementPortal.TaskPortalApi.Controllers
         }
 
         [HttpPut("project/{id}")]
-        public async Task<IActionResult> Update(string id, [FromBody] UpdateProjectDto updateProjectDto)
+        public async Task<IActionResult> UpdateProject(string id, [FromBody] UpdateProjectDto updateProjectDto)
         {
             try
             {
@@ -143,7 +143,7 @@ namespace TaskManagementPortal.TaskPortalApi.Controllers
         }
 
         [HttpDelete("project/{id}")]
-        public async Task<IActionResult> Delete(string id)
+        public async Task<IActionResult> DeleteProject(string id)
         {
             try
             {

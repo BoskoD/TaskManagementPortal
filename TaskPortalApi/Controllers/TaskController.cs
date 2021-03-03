@@ -47,7 +47,7 @@ namespace TaskManagementPortal.TaskPortalApi.Controllers
                 }
                 await _taskRepository.CreateAsync(new TaskEntity
                 {
-                    PartitionKey = taskDto.Project.PartitionKey,
+                    PartitionKey = taskDto.ProjectId,
                     RowKey = Guid.NewGuid().ToString().Substring(1,7),
                     Name = taskDto.Name,
                     Description = taskDto.Description
@@ -126,7 +126,7 @@ namespace TaskManagementPortal.TaskPortalApi.Controllers
                 await _taskRepository.UpdateAsync(new TaskEntity
                 {
                     RowKey = id,
-                    PartitionKey = updateTaskDto.Project.PartitionKey,
+                    PartitionKey = updateTaskDto.ProjectId,
                     Name = updateTaskDto.Name,
                     Description = updateTaskDto.Description,
                     IsComplete = updateTaskDto.IsComplete,
@@ -162,8 +162,8 @@ namespace TaskManagementPortal.TaskPortalApi.Controllers
             }
         }
 
-        [HttpGet("project/{name}/tasks")]
-        public async Task<ActionResult<TaskEntity>> GetTasksByProject(string name)
+        [HttpGet("project/{id}/tasks")]
+        public async Task<ActionResult<TaskEntity>> GetTasksByProject(string id)
         {
             try
             {
@@ -175,7 +175,7 @@ namespace TaskManagementPortal.TaskPortalApi.Controllers
                 }
                 IEnumerable<TaskEntity> taskEntities = entities.ToList();
                 _logger.LogInfo($"Entities found {taskEntities.Count()}");
-                var tasks = taskEntities.Where(t => t.PartitionKey.Contains(name));
+                var tasks = taskEntities.Where(t => t.PartitionKey.Contains(id));
                 if (!tasks.Any())
                 {
                     _logger.LogInfo("Object not found");
