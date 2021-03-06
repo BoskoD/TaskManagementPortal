@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using TaskManagementPortal.Entities.Entities;
 
 namespace TaskManagementPortal.Entities.DataTransferObjects.Task
 {

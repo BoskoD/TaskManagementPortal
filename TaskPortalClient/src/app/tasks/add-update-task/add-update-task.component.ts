@@ -11,13 +11,13 @@ export class AddUpdateTaskComponent implements OnInit {
   constructor(private service:SharedService) { }
 
   @Input() task:any;
-  partitionKey:string;
-  rowKey: string;
-  name:string;
+  projectId:string;
+  id: string;
+  name: string;
   description: string;
   isComplete: boolean;
 
-  ProjectsList:{ [key: string]: string } = {};
+  ProjectsList:any;
 
 
   ngOnInit(): void {
@@ -28,9 +28,9 @@ export class AddUpdateTaskComponent implements OnInit {
     this.service.getProjectsList().subscribe((data:any)=>{
       this.ProjectsList=data;
 
-      this.rowKey = this.task.rowKey,
+      this.id = this.task.id;
       this.name=this.task.name;
-      this.partitionKey=data.rowKey
+      this.projectId=data.id
       this.description=this.task.description;
       this.isComplete=this.task.isComplete;
 
@@ -40,10 +40,10 @@ export class AddUpdateTaskComponent implements OnInit {
 
   addTask(){
     var val = { 
-                rowKey: this.rowKey,
-                partitionKey:this.partitionKey,
-                name:this.name,
-                description:this.description};
+                id: this.id,
+                projectId: this.projectId,
+                name: this.name,
+                description: this.description};
     this.service.addTask(val).subscribe(res=>{
       console.log(res);
       alert("New task created");
@@ -51,15 +51,14 @@ export class AddUpdateTaskComponent implements OnInit {
   }
 
   updateTask(){
-    var val = { 
-                rowKey: this.rowKey,
-                partitionKey:this.partitionKey,
-                name:this.name,
-                description:this.description,
-                isComplete:this.isComplete};
-    this.service.updateTask(val).subscribe(res=>{
-      console.log(res);
-    alert("Task updated");
-    });
+    var val = { id: this.id,
+                projectId: this.projectId,
+                name: this.name,
+                description: this.description,
+                isComplete: this.isComplete}
+   this.service.updateTask(val).subscribe(res=>{
+        console.log(res);
+        alert("Task updated");
+      });
+    };
   }
-}

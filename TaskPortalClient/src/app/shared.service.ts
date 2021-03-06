@@ -19,7 +19,7 @@ export class SharedService {
   }
 
   updateProject(val:any){
-    return this.http.put(`${baseUrl}project/${val.rowKey}`, val);
+    return this.http.put(`${baseUrl}project/${val.id}`, val);
   }
 
   deleteProject(val:any){
@@ -35,7 +35,7 @@ export class SharedService {
   }
 
   updateTask(val:any){
-    return this.http.put(`${baseUrl}task/${val.rowKey}`, val);
+    return this.http.put(`${baseUrl}task/${val.id}`, val);
   }
 
   deleteTask(val:any){

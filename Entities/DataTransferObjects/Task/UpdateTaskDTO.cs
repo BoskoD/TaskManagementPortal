@@ -1,6 +1,4 @@
-﻿using TaskManagementPortal.Entities.Entities;
-
-namespace TaskManagementPortal.Entities.DataTransferObjects.Task
+﻿namespace TaskManagementPortal.Entities.DataTransferObjects.Task
 {
     public class UpdateTaskDto : BaseDto
     {

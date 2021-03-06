@@ -35,11 +35,11 @@ namespace TaskManagementPortal.TaskPortalApi.Controllers
         }
 
         [HttpPost("project")]
-        public async Task<IActionResult> CreateProject([FromBody] CreateProjectDto projectDto)
+        public async Task<IActionResult> CreateProject([FromBody] CreateUpdateProjectDto createProjectDto)
         {
             try
             {
-                if (projectDto == null)
+                if (createProjectDto == null)
                 {
                     _logger.LogError("Object sent from client is null.");
                     return BadRequest("Owner object is null");
@@ -52,12 +52,12 @@ namespace TaskManagementPortal.TaskPortalApi.Controllers
 
                 await _projectRepository.CreateAsync(new ProjectEntity
                 {
-                    PartitionKey = projectDto.Name,
+                    PartitionKey = createProjectDto.Name,
                     RowKey = Guid.NewGuid().ToString(),
-                    Description = projectDto.Description,
-                    Code = projectDto.Code,
+                    Description = createProjectDto.Description,
+                    Code = createProjectDto.Code,
                 });
-                return Ok(projectDto);
+                return Ok(createProjectDto);
             }
             catch (Exception ex)
             {
@@ -127,7 +127,7 @@ namespace TaskManagementPortal.TaskPortalApi.Controllers
         }
 
         [HttpPut("project/{id}")]
-        public async Task<IActionResult> UpdateProject(string id, [FromBody] UpdateProjectDto updateProjectDto)
+        public async Task<IActionResult> UpdateProject(string id, [FromBody] CreateUpdateProjectDto updateProjectDto)
         {
             try
             {

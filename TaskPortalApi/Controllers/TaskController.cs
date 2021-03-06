@@ -9,25 +9,29 @@ using Microsoft.Extensions.Caching.Memory;
 using TaskManagementPortal.Contracts;
 using TaskManagementPortal.Entities.DataTransferObjects.Task;
 using TaskManagementPortal.Entities.Entities;
+using AutoMapper;
 
 namespace TaskManagementPortal.TaskPortalApi.Controllers
 {
     [ApiController]
-    [Authorize]
+    //[Authorize]
     [Route("api/")]
     public class TaskController : ControllerBase
     {
         private readonly IMemoryCache _memoryCache;
         private readonly ITaskRepository _taskRepository;
         private readonly ILoggerManger _logger;
+        private readonly IMapper _mapper;
 
         public TaskController(ILoggerManger logger, 
             ITaskRepository taskRepository, 
-            IMemoryCache memoryCache)
+            IMemoryCache memoryCache,
+            IMapper mapper)
         {
             _taskRepository = taskRepository;
             _logger = logger;
             _memoryCache = memoryCache;
+            _mapper = mapper;
         }
 
         [HttpPost("task")]
@@ -73,7 +77,16 @@ namespace TaskManagementPortal.TaskPortalApi.Controllers
                 }
                 entities = _memoryCache.Get("Entities") as IEnumerable<TaskEntity>;
 
-                return Ok(entities);
+                TaskDto presentation = null;
+                List<TaskDto> taskDtos = new List<TaskDto>();
+
+                foreach (var entity in entities)
+                {
+                    presentation = _mapper.Map<TaskDto>(entity);
+                    taskDtos.Add(presentation);
+                }
+
+                return Ok(taskDtos);
             }
             catch (Exception ex)
             {
@@ -88,8 +101,11 @@ namespace TaskManagementPortal.TaskPortalApi.Controllers
             try
             {
                 var entities = await _taskRepository.ReadAllASync();
-                TaskEntity taskEntity;
-                taskEntity = entities.FirstOrDefault(e => e.RowKey == id);
+                var taskEntity = entities.FirstOrDefault(e => e.RowKey == id);
+
+                TaskDto presentation = null;
+                presentation = _mapper.Map<TaskDto>(taskEntity);
+
                 if (taskEntity == null || taskEntity.Deleted)
                 {
                     _logger.LogError($"Task with id: {id}, hasn't been found in db.");
@@ -98,7 +114,7 @@ namespace TaskManagementPortal.TaskPortalApi.Controllers
                 else
                 {
                     _logger.LogInfo($"Returned task with id: {id}");
-                    return Ok(taskEntity);
+                    return Ok(presentation);
                 }
             }
             catch (Exception ex)
@@ -173,14 +189,26 @@ namespace TaskManagementPortal.TaskPortalApi.Controllers
                     _logger.LogError("Object sent from client is null.");
                     return BadRequest("Object is null");
                 }
-                IEnumerable<TaskEntity> taskEntities = entities.ToList();
-                _logger.LogInfo($"Entities found {taskEntities.Count()}");
-                var tasks = taskEntities.Where(t => t.PartitionKey.Contains(id));
+                // filter by partitionKey which represents ProjectId
+                var tasks = entities.Where(t => t.PartitionKey.Contains(id));
+
+                _logger.LogInfo($"Entities found {tasks.Count()}");
+
+                TaskDto presentation = null;
+                List<TaskDto> taskDtos = new List<TaskDto>();
+
+                foreach (var task in tasks)
+                {
+                    presentation = _mapper.Map<TaskDto>(task);
+                    taskDtos.Add(presentation);
+                }
+
                 if (!tasks.Any())
                 {
                     _logger.LogInfo("Object not found");
                 }
-                return Ok(tasks);
+
+                return Ok(taskDtos);
             }
             catch (Exception ex)
             {

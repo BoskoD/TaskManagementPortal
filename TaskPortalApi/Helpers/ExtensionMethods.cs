@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
 using System.Linq;
+using TaskManagementPortal.Entities.DataTransferObjects.Project;
 using TaskManagementPortal.Entities.Entities;
 
 namespace TaskManagementPortal.TaskPortalApi.Helpers
