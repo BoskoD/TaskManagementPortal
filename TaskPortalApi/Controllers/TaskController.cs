@@ -14,7 +14,7 @@ using AutoMapper;
 namespace TaskManagementPortal.TaskPortalApi.Controllers
 {
     [ApiController]
-    //[Authorize]
+    [Authorize]
     [Route("api/")]
     public class TaskController : ControllerBase
     {

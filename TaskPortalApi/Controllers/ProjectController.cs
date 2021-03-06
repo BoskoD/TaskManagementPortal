@@ -14,7 +14,7 @@ using TaskManagementPortal.Entities.Entities;
 namespace TaskManagementPortal.TaskPortalApi.Controllers
 {
     [ApiController]
-    //[Authorize]
+    [Authorize]
     [Route("api/")]
     public class ProjectController : ControllerBase
     {
