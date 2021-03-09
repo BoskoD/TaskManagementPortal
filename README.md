@@ -36,7 +36,9 @@ API documentation V1: https://taskportal-v1.azurewebsites.net/index.html
 - [x] YAGNI
 - [x] JWT
 - [x] Repository & Generic Repository
-- [x] API Specification, API Definition (Swagger)
+- [x] API Specification
+- [x] API Definition 
+- [x] API Versioning
 - [x] Postman
 - [x] Middleware
 - [x] Authentication
@@ -48,7 +50,6 @@ API documentation V1: https://taskportal-v1.azurewebsites.net/index.html
 - [x] Soft Delete
 - [x] Logging
 - [x] StyleCop
-- [x] API Versioning with Swagger
 - [x] Caching
 - [x] Kestrel
 - [x] AzureStorage
@@ -56,7 +57,7 @@ API documentation V1: https://taskportal-v1.azurewebsites.net/index.html
 - [x] NET5
 - [x] Angular
 - [x] PSScripts
-- [x] Mapping (AutoMapper)
+- [x] AutoMapper
 - [x] ARM profile
 - [ ] Docker
 - [ ] File storage: Upload/Download
