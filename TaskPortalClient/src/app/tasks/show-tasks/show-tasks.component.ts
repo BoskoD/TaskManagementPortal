@@ -19,8 +19,10 @@ export class ShowTasksComponent implements OnInit {
   task: any;
 
   loadProjectsList(){
-    this.service.readAllProjectNames().subscribe((data:any)=>{
+    this.service.getProjectsList().subscribe((data:any)=>{
       this.ProjectsList=data;
+
+      projectId: data.id;
 
       console.log(data);
     });
@@ -29,8 +31,8 @@ export class ShowTasksComponent implements OnInit {
 
   addClick(){ 
     this.task= {
-      partitionKey:"",
-      rowKey:0,
+      projectId:"",
+      id:0,
       name:"",
       description:"",
       isComplete:""
@@ -42,18 +44,20 @@ export class ShowTasksComponent implements OnInit {
 
   updateClick(item: any){
     this.task= {
-      partitionKey:item.partitionKey,
-      rowKey:item.rowKey,
+      projectId:item.projectId,
+      id:item.id,
       name:item.name,
       description:item.description,
       isComplete:item.isComplete}
     this.ModalTitle="Update Task info";
     this.ActivateAddUpdateTaskComponent=true;
+    console.log(item)
+
   }
 
-  deleteClick(item: { rowKey: any; }){
+  deleteClick(item: { id: any; }){
     if(confirm('Are you sure??')){
-      this.service.deleteTask(item.rowKey).subscribe(data=>{
+      this.service.deleteTask(item.id).subscribe(data=>{
         alert("Record deleted!");
         this.refreshTasksList();
       })

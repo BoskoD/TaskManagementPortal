@@ -1,9 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
+using AutoMapper;
 using System.Linq;
-using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Caching.Memory;
 using TaskManagementPortal.Contracts;
@@ -14,31 +15,31 @@ namespace TaskManagementPortal.TaskPortalApi.Controllers
 {
     [ApiController]
     [Authorize]
-    [Route("api/[controller]")]
+    [Route("api/")]
     public class ProjectController : ControllerBase
     {
         private readonly IMemoryCache _memoryCache;
         private readonly IProjectRepository _projectRepository;
-        private readonly ITaskRepository _taskRepository;
         private readonly ILoggerManger _logger;
+        private readonly IMapper _mapper;
 
         public ProjectController(ILoggerManger logger, 
             IProjectRepository projectRepository, 
-            ITaskRepository taskRepository, 
-            IMemoryCache memoryCache)
+            IMemoryCache memoryCache,
+            IMapper mapper)
         {
             _projectRepository = projectRepository;
-            _taskRepository = taskRepository;
             _logger = logger;
             _memoryCache = memoryCache;
+            _mapper = mapper;
         }
 
-        [HttpPost("create")]
-        public async Task<IActionResult> Create([FromBody] CreateProjectDto projectDto)
+        [HttpPost("project")]
+        public async Task<IActionResult> CreateProject([FromBody] CreateUpdateProjectDto createProjectDto)
         {
             try
             {
-                if (projectDto == null)
+                if (createProjectDto == null)
                 {
                     _logger.LogError("Object sent from client is null.");
                     return BadRequest("Owner object is null");
@@ -48,14 +49,15 @@ namespace TaskManagementPortal.TaskPortalApi.Controllers
                     _logger.LogError("Invalid object sent from client.");
                     return BadRequest("Invalid model object");
                 }
+
                 await _projectRepository.CreateAsync(new ProjectEntity
                 {
-                    PartitionKey = projectDto.Name,
+                    PartitionKey = createProjectDto.Name,
                     RowKey = Guid.NewGuid().ToString(),
-                    Description = projectDto.Description,
-                    Code = projectDto.Code,
+                    Description = createProjectDto.Description,
+                    Code = createProjectDto.Code,
                 });
-                return Ok(projectDto);
+                return Ok(createProjectDto);
             }
             catch (Exception ex)
             {
@@ -64,8 +66,8 @@ namespace TaskManagementPortal.TaskPortalApi.Controllers
             }
         }
 
-        [HttpGet("readall")]
-        public async Task<IActionResult> ReadAll()
+        [HttpGet("projects")]
+        public async Task<IActionResult> GetAllProjects()
         {
             try
             {
@@ -76,7 +78,16 @@ namespace TaskManagementPortal.TaskPortalApi.Controllers
                 }
                 entities = _memoryCache.Get("Entities") as IEnumerable<ProjectEntity>;
 
-                return Ok(entities);
+                ProjectDto presentation = null;
+                List<ProjectDto> projectDtos = new List<ProjectDto>();
+
+                foreach (var entity in entities)
+                {
+                    presentation = _mapper.Map<ProjectDto>(entity);
+                    projectDtos.Add(presentation);
+                }
+
+                return Ok(projectDtos);
             }
             catch (Exception ex)
             {
@@ -86,14 +97,16 @@ namespace TaskManagementPortal.TaskPortalApi.Controllers
 
         }
 
-        [HttpGet("readbyid/{id}")]
-        public async Task<IActionResult> ReadById(string id)
+        [HttpGet("project/{id}")]
+        public async Task<IActionResult> GetProjectById(string id)
         {
             try
             {
                 var entities = await _projectRepository.ReadAllASync();
-                ProjectEntity projectEntity;
-                projectEntity = entities.FirstOrDefault(e => e.RowKey == id);
+                var projectEntity = entities.FirstOrDefault(e => e.RowKey == id);
+
+                ProjectDto presentation = null;
+                presentation = _mapper.Map<ProjectDto>(projectEntity);
 
                 if (projectEntity == null || projectEntity.Deleted)
                 {
@@ -103,7 +116,7 @@ namespace TaskManagementPortal.TaskPortalApi.Controllers
                 else
                 {
                     _logger.LogInfo($"Returned owner with id: {id}");
-                    return Ok(projectEntity);
+                    return Ok(presentation);
                 }
             }
             catch (Exception ex)
@@ -113,8 +126,8 @@ namespace TaskManagementPortal.TaskPortalApi.Controllers
             }
         }
 
-        [HttpPut("update/{id}")]
-        public async Task<IActionResult> Update(string id, [FromBody] UpdateProjectDto updateProjectDto)
+        [HttpPut("project/{id}")]
+        public async Task<IActionResult> UpdateProject(string id, [FromBody] CreateUpdateProjectDto updateProjectDto)
         {
             try
             {
@@ -145,8 +158,8 @@ namespace TaskManagementPortal.TaskPortalApi.Controllers
             }
         }
 
-        [HttpDelete("delete/{id}")]
-        public async Task<IActionResult> Delete(string id)
+        [HttpDelete("project/{id}")]
+        public async Task<IActionResult> DeleteProject(string id)
         {
             try
             {
@@ -162,53 +175,6 @@ namespace TaskManagementPortal.TaskPortalApi.Controllers
             catch (Exception ex)
             {
                 _logger.LogError($"Something went wrong inside Delete action: {ex.Message}");
-                return StatusCode(500, "Internal server error");
-            }
-        }
-
-        [HttpDelete("deleteproject")]
-        public async Task<IActionResult> DeleteProject(string id, [FromBody] DeleteProjectDto projectModel)
-        {
-            try
-            {
-                await _projectRepository.DeleteAsync(new ProjectEntity
-                {
-                    PartitionKey = projectModel.Name,
-                    RowKey = id,
-                    ETag = "*"
-                });
-                return Ok(projectModel);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Something went wrong inside DeleteProject action: {ex.Message}");
-                return StatusCode(500, "Internal server error");
-            }
-        }
-
-        [HttpGet("readtasksfromproject/{name}")]
-        public async Task<ActionResult<TaskEntity>> TasksByProject(string name)
-        {
-            try
-            {
-                var entities = await _taskRepository.ReadAllASync();
-                if (entities == null)
-                {
-                    _logger.LogError("Object sent from client is null.");
-                    return BadRequest("Object is null");
-                }
-                IEnumerable<TaskEntity> taskEntities = entities.ToList();
-                _logger.LogInfo($"Entities found {taskEntities.Count()}");
-                var tasks = taskEntities.Where(t => t.PartitionKey.Contains(name));
-                if (!tasks.Any())
-                {
-                    _logger.LogInfo("Object not found");
-                }
-                return Ok(tasks);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Something went wrong inside DeleteProject action: {ex.Message}");
                 return StatusCode(500, "Internal server error");
             }
         }

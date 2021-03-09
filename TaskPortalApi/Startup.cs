@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Text;
 using System.Text.Json.Serialization;
+using AutoMapper;
 using Azure.Core.Extensions;
 using Azure.Storage.Blobs;
 using Azure.Storage.Queues;
@@ -73,6 +74,8 @@ namespace TaskManagementPortal.TaskPortalApi
 
             // configure Logger
             services.AddSingleton<ILoggerManger, LoggerManager>();
+
+            services.AddAutoMapper(typeof(Startup));
 
             // configure Swagger
             services.AddSwaggerGen(c =>

@@ -1,6 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
+using AutoMapper;
 using System.Linq;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -9,33 +10,32 @@ using Microsoft.Extensions.Caching.Memory;
 using TaskManagementPortal.Contracts;
 using TaskManagementPortal.Entities.DataTransferObjects.Task;
 using TaskManagementPortal.Entities.Entities;
-using TaskManagementPortal.Entities.DataTransferObjects.Project;
 
 namespace TaskManagementPortal.TaskPortalApi.Controllers
 {
     [ApiController]
     [Authorize]
-    [Route("api/[controller]")]
+    [Route("api/")]
     public class TaskController : ControllerBase
     {
         private readonly IMemoryCache _memoryCache;
         private readonly ITaskRepository _taskRepository;
-        private readonly IProjectRepository _projectRepository;
         private readonly ILoggerManger _logger;
+        private readonly IMapper _mapper;
 
         public TaskController(ILoggerManger logger, 
             ITaskRepository taskRepository, 
-            IProjectRepository projectRepository, 
-            IMemoryCache memoryCache)
+            IMemoryCache memoryCache,
+            IMapper mapper)
         {
             _taskRepository = taskRepository;
-            _projectRepository = projectRepository; 
             _logger = logger;
             _memoryCache = memoryCache;
+            _mapper = mapper;
         }
 
-        [HttpPost("create")]
-        public async Task<IActionResult> Create([FromBody] CreateTaskDto taskDto)
+        [HttpPost("task")]
+        public async Task<IActionResult> CreateTask([FromBody] CreateTaskDto taskDto)
         {
             try
             {
@@ -51,7 +51,7 @@ namespace TaskManagementPortal.TaskPortalApi.Controllers
                 }
                 await _taskRepository.CreateAsync(new TaskEntity
                 {
-                    PartitionKey = taskDto.Project.PartitionKey,
+                    PartitionKey = taskDto.ProjectId,
                     RowKey = Guid.NewGuid().ToString().Substring(1,7),
                     Name = taskDto.Name,
                     Description = taskDto.Description
@@ -65,8 +65,8 @@ namespace TaskManagementPortal.TaskPortalApi.Controllers
             }
         }
 
-        [HttpGet("readall")]
-        public async Task<IActionResult> ReadAll()
+        [HttpGet("tasks")]
+        public async Task<IActionResult> GetAllTasks()
         {
             try
             {
@@ -77,7 +77,16 @@ namespace TaskManagementPortal.TaskPortalApi.Controllers
                 }
                 entities = _memoryCache.Get("Entities") as IEnumerable<TaskEntity>;
 
-                return Ok(entities);
+                TaskDto presentation = null;
+                List<TaskDto> taskDtos = new List<TaskDto>();
+
+                foreach (var entity in entities)
+                {
+                    presentation = _mapper.Map<TaskDto>(entity);
+                    taskDtos.Add(presentation);
+                }
+
+                return Ok(taskDtos);
             }
             catch (Exception ex)
             {
@@ -86,14 +95,17 @@ namespace TaskManagementPortal.TaskPortalApi.Controllers
             }
         }
 
-        [HttpGet("readbyid/{id}")]
-        public async Task<IActionResult> ReadById(string id)
+        [HttpGet("task/{id}")]
+        public async Task<IActionResult> GetTaskById(string id)
         {
             try
             {
                 var entities = await _taskRepository.ReadAllASync();
-                TaskEntity taskEntity;
-                taskEntity = entities.FirstOrDefault(e => e.RowKey == id);
+                var taskEntity = entities.FirstOrDefault(e => e.RowKey == id);
+
+                TaskDto presentation = null;
+                presentation = _mapper.Map<TaskDto>(taskEntity);
+
                 if (taskEntity == null || taskEntity.Deleted)
                 {
                     _logger.LogError($"Task with id: {id}, hasn't been found in db.");
@@ -102,7 +114,7 @@ namespace TaskManagementPortal.TaskPortalApi.Controllers
                 else
                 {
                     _logger.LogInfo($"Returned task with id: {id}");
-                    return Ok(taskEntity);
+                    return Ok(presentation);
                 }
             }
             catch (Exception ex)
@@ -112,8 +124,8 @@ namespace TaskManagementPortal.TaskPortalApi.Controllers
             }
         }
 
-        [HttpPut("update/{id}")]
-        public async Task<IActionResult> Update(string id, [FromBody] UpdateTaskDto updateTaskDto)
+        [HttpPut("task/{id}")]
+        public async Task<IActionResult> UpdateTask(string id, [FromBody] UpdateTaskDto updateTaskDto)
         {
             try
             {
@@ -130,7 +142,7 @@ namespace TaskManagementPortal.TaskPortalApi.Controllers
                 await _taskRepository.UpdateAsync(new TaskEntity
                 {
                     RowKey = id,
-                    PartitionKey = updateTaskDto.Project.PartitionKey,
+                    PartitionKey = updateTaskDto.ProjectId,
                     Name = updateTaskDto.Name,
                     Description = updateTaskDto.Description,
                     IsComplete = updateTaskDto.IsComplete,
@@ -145,8 +157,8 @@ namespace TaskManagementPortal.TaskPortalApi.Controllers
             }
         }
 
-        [HttpDelete("delete/{id}")]
-        public async Task<IActionResult> Delete(string id)
+        [HttpDelete("task/{id}")]
+        public async Task<IActionResult> DeleteTask(string id)
         {
             try
             {
@@ -166,27 +178,41 @@ namespace TaskManagementPortal.TaskPortalApi.Controllers
             }
         }
 
-        [HttpGet("readallprojectnames")]
-        public async Task<IActionResult> GetAllProjectNames()
+        [HttpGet("project/{id}/tasks")]
+        public async Task<ActionResult<TaskEntity>> GetTasksByProject(string id)
         {
             try
             {
-                var entities = await _projectRepository.ReadAllASync();
+                var entities = await _taskRepository.ReadAllASync();
                 if (entities == null)
                 {
-                    _logger.LogError("No records found.");
-                    return NotFound();
+                    _logger.LogError("Object sent from client is null.");
+                    return BadRequest("Object is null");
                 }
-                var model = entities.Select(x => new ReadProjectNamesDto
+                // filter by partitionKey which represents ProjectId
+                var tasks = entities.Where(t => t.PartitionKey.Contains(id));
+
+                _logger.LogInfo($"Entities found {tasks.Count()}");
+
+                TaskDto presentation = null;
+                List<TaskDto> taskDtos = new List<TaskDto>();
+
+                foreach (var task in tasks)
                 {
-                    Id = x.RowKey,
-                    Name = x.PartitionKey
-                });
-                return Ok(model);
+                    presentation = _mapper.Map<TaskDto>(task);
+                    taskDtos.Add(presentation);
+                }
+
+                if (!tasks.Any())
+                {
+                    _logger.LogInfo("Object not found");
+                }
+
+                return Ok(taskDtos);
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Something went wrong inside GetAllProjectNames action: {ex.Message}");
+                _logger.LogError($"Something went wrong inside DeleteProject action: {ex.Message}");
                 return StatusCode(500, "Internal server error");
             }
         }

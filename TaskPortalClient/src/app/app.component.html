@@ -1,11 +1,13 @@
 <!-- nav -->
 <nav class="navbar navbar-expand navbar-dark bg-dark" *ngIf="user">
+    <a class="navbar-brand" href="">TMPortal</a>
+
     <div class="nav nav-tabs">
         <a class="nav-item nav-link" routerLink="/">Home</a>
         <a class="nav-item nav-link" routerLink="/projects">Projects</a>
         <a class="nav-item nav-link" routerLink="/tasks">Tasks</a>
         <a class="nav-item nav-link" routerLink="/admin" *ngIf="isAdmin">Admin</a>
-        <a class="nav-item nav-link" (click)="logout()">Logout</a>
+        <a class="nav-item nav-link " (click)="logout()">Logout</a>
     </div>
 </nav>
 
