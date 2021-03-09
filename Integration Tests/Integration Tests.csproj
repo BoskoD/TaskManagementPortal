@@ -20,4 +20,9 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Task\" />
+    <Folder Include="Project\" />
+  </ItemGroup>
+
 </Project>

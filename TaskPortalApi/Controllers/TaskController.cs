@@ -1,6 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
+using AutoMapper;
 using System.Linq;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -9,7 +10,6 @@ using Microsoft.Extensions.Caching.Memory;
 using TaskManagementPortal.Contracts;
 using TaskManagementPortal.Entities.DataTransferObjects.Task;
 using TaskManagementPortal.Entities.Entities;
-using AutoMapper;
 
 namespace TaskManagementPortal.TaskPortalApi.Controllers
 {
