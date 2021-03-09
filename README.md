@@ -4,6 +4,7 @@
 1.	Id
 2.	Task name
 3.	Task description
+4.	State(IsComplete)
 
 “Project” – is an instance which contains at least 3 fields listed below:
 1. Id
@@ -55,6 +56,7 @@ API documentation V1: https://taskportal-v1.azurewebsites.net/index.html
 - [x] Angular
 - [x] PSScripts
 - [x] Mapping (AutoMapper)
+- [x] ARM profile
 - [ ] Docker
 - [ ] File storage: Upload/Download
 - [ ] Kubernetes / SF
