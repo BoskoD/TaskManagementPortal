@@ -24,7 +24,7 @@ To access to our service we need to implement Rest API.
 - Angular
 
 ## API Documentation - Swagger
-API documentation V1: https://taskportalapi20210227224026.azurewebsites.net/index.html
+API documentation V1: https://taskportal-v1.azurewebsites.net/index.html
 
 ## TODO
 
