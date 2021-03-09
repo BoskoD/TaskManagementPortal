@@ -33,7 +33,7 @@ API documentation V1: https://taskportal-v1.azurewebsites.net/index.html
 - [x] REST
 - [x] KISS
 - [x] SOLID
-- [ ] YAGNI
+- [x] YAGNI
 - [x] JWT
 - [x] Repository & Generic Repository
 - [x] API Specification, API Definition (Swagger)
