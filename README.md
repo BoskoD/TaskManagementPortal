@@ -12,8 +12,7 @@
 3. Code base
 
 ## Solution 
-We should have the ability to easily add new fields in Task entity. 
-Each task should be a part of only one project. 
+We should have the ability to easily add new fields in Task entity. Each task should be a part of only one project. 
 Project – is an instance which contains name, id and code (and also keep Tasks entities).
 Service needs to be deployed in Microsoft Azure and use tables (Azure Table Storage) for storing projects and tasks. 
 To access to our service we need to implement Rest API.
