@@ -78,5 +78,6 @@ API documentation V1: https://taskportal-v1.azurewebsites.net/index.html
 - https://docs.microsoft.com/en-us/azure/storage/tables/table-storage-how-to-use-powershell
 - https://nlog-project.org/
 - https://angular.io/
+- https://www.hangfire.io/
 
 
