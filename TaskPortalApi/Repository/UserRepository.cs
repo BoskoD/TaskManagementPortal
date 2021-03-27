@@ -52,7 +52,6 @@ namespace TaskManagementPortal.TaskPortalApi.Repository
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
             user.Token = tokenHandler.WriteToken(token);
-
             return user.WithoutPassword();
         }
 
