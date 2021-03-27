@@ -59,6 +59,8 @@ API documentation V1: https://taskportal-v1.azurewebsites.net/index.html
 - [x] PSScripts
 - [x] AutoMapper
 - [x] ARM profile
+- [x] Hangfire
+- [ ] OpenTelemetry
 - [ ] Docker
 - [ ] File storage: Upload/Download
 - [ ] Kubernetes / SF
