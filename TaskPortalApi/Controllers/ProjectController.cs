@@ -10,6 +10,7 @@ using Microsoft.Extensions.Caching.Memory;
 using TaskManagementPortal.Contracts;
 using TaskManagementPortal.Entities.DataTransferObjects.Project;
 using TaskManagementPortal.Entities.Entities;
+using OpenTelemetry.Trace;
 
 namespace TaskManagementPortal.TaskPortalApi.Controllers
 {
@@ -23,8 +24,8 @@ namespace TaskManagementPortal.TaskPortalApi.Controllers
         private readonly ILoggerManger _logger;
         private readonly IMapper _mapper;
 
-        public ProjectController(ILoggerManger logger, 
-            IProjectRepository projectRepository, 
+        public ProjectController(ILoggerManger logger,
+            IProjectRepository projectRepository,
             IMemoryCache memoryCache,
             IMapper mapper)
         {

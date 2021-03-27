@@ -1,4 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
+using OpenTelemetry;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +22,17 @@ namespace TaskManagementPortal.TaskPortalApi.Helpers
             });
         }
 
+        public static void ConfigureOpenTelemetry(this IServiceCollection services)
+        {
+            services.AddOpenTelemetryTracing(
+                (builder) => builder
+                   .SetResourceBuilder(
+                        ResourceBuilder.CreateDefault().AddService("TaskPortal"))
+                            .AddAspNetCoreInstrumentation()
+                            .AddConsoleExporter());
+        }
+        
+
         public static IEnumerable<UserEntity> WithoutPasswords(this IEnumerable<UserEntity> users) 
         {
             if (users == null) return null;
@@ -32,7 +46,5 @@ namespace TaskManagementPortal.TaskPortalApi.Helpers
             user.Password = null;
             return user;
         }
-
-        
     }
 }

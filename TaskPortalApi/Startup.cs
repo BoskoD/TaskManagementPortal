@@ -15,14 +15,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using AutoMapper;
-using Hangfire;
-using NLog;
 using TaskManagementPortal.Contracts;
 using TaskManagementPortal.LoggerService;
 using TaskManagementPortal.TaskPortalApi.Helpers;
 using TaskManagementPortal.TaskPortalApi.Repository;
-
+using AutoMapper;
+using Hangfire;
+using NLog;
 
 namespace TaskManagementPortal.TaskPortalApi
 {
@@ -41,6 +40,7 @@ namespace TaskManagementPortal.TaskPortalApi
             services.AddControllers();
             services.ConfigureCors();
             services.AddMemoryCache();
+            // configure Hangfire connection string
             services.AddHangfire(x => x.UseSqlServerStorage(Configuration
                 .GetConnectionString("HangfireStorage")));
             services.AddHangfireServer();
@@ -132,6 +132,9 @@ namespace TaskManagementPortal.TaskPortalApi
                 builder.AddQueueServiceClient(Configuration["ConnectionStrings:StorageConnectionString:queue"], preferMsi: true);
             });
             services.AddHealthChecks();
+
+            // configure OpenTelemetry
+            services.ConfigureOpenTelemetry();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
