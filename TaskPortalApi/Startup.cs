@@ -2,7 +2,6 @@ using System;
 using System.IO;
 using System.Text;
 using System.Text.Json.Serialization;
-using AutoMapper;
 using Azure.Core.Extensions;
 using Azure.Storage.Blobs;
 using Azure.Storage.Queues;
@@ -16,6 +15,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using AutoMapper;
+using Hangfire;
 using NLog;
 using TaskManagementPortal.Contracts;
 using TaskManagementPortal.LoggerService;
@@ -40,7 +41,9 @@ namespace TaskManagementPortal.TaskPortalApi
             services.AddControllers();
             services.ConfigureCors();
             services.AddMemoryCache();
-
+            services.AddHangfire(x => x.UseSqlServerStorage(Configuration
+                .GetConnectionString("HangfireStorage")));
+            services.AddHangfireServer();
 
             // configure strongly typed settings objects
             var appSettingsSection = Configuration.GetSection("AppSettings");
@@ -71,10 +74,12 @@ namespace TaskManagementPortal.TaskPortalApi
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddTransient<IProjectRepository, ProjectRepository>();
             services.AddTransient<ITaskRepository, TaskRepository>();
+            services.AddTransient<INotificationRepository, NotificationRepository>();
 
             // configure Logger
             services.AddSingleton<ILoggerManger, LoggerManager>();
 
+            // configure AutoMapper
             services.AddAutoMapper(typeof(Startup));
 
             // configure Swagger
@@ -114,7 +119,7 @@ namespace TaskManagementPortal.TaskPortalApi
                 c.AddSecurityDefinition(securityScheme.Reference.Id, securityScheme);
                 c.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
-                    {securityScheme, new string[] { }}
+                    {securityScheme, Array.Empty<string>()}
                 });
             });
 
@@ -144,7 +149,6 @@ namespace TaskManagementPortal.TaskPortalApi
 
             app.UseCors("CorsPolicy");
 
-
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
                 ForwardedHeaders = ForwardedHeaders.All
@@ -153,6 +157,7 @@ namespace TaskManagementPortal.TaskPortalApi
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseHangfireDashboard();
 
             app.UseEndpoints(endpoints =>
             {
@@ -161,6 +166,8 @@ namespace TaskManagementPortal.TaskPortalApi
                     pattern: "{controller=Home}/{action=Index}/{id?}");
 
                 endpoints.MapHealthChecks("/health");
+
+                endpoints.MapHangfireDashboard("/hangfire");
             });
 
             if (env.IsDevelopment())

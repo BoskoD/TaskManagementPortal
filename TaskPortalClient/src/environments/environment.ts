@@ -6,8 +6,7 @@ export const environment = {
   production: false
 };
 
-export const baseUrl = `https://taskportal-v1.azurewebsites.net/api/`;
-// export const baseUrl = `https://localhost:5001/api/`;
+export const baseUrl = `https://localhost:5001/api/`;
 
 /*
  * For easier debugging in development mode, you can import the following file
