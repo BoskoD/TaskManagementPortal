@@ -59,7 +59,7 @@ API documentation V1: https://taskportal-v1.azurewebsites.net/index.html
 - [x] AutoMapper
 - [x] ARM profile
 - [x] Hangfire
-- [ ] OpenTelemetry
+- [x] Telemetry
 - [ ] Docker
 - [ ] File storage: Upload/Download
 - [ ] Kubernetes / SF
@@ -78,5 +78,6 @@ API documentation V1: https://taskportal-v1.azurewebsites.net/index.html
 - https://nlog-project.org/
 - https://angular.io/
 - https://www.hangfire.io/
+- https://opentelemetry.io/
 
 
