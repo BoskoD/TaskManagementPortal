@@ -56,7 +56,7 @@ namespace TaskManagementPortal.TaskPortalApi.Controllers
                     Name = taskDto.Name,
                     Description = taskDto.Description
                 });
-                return Ok(taskDto);
+                return Created("", taskDto);
             }
             catch (Exception ex)
             {
