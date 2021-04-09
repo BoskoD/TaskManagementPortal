@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using TaskManagementPortal.Contracts;
 using TaskManagementPortal.Entities.Entities;
+using TaskManagementPortal.TaskPortalApi.Helpers;
+
 
 namespace TaskManagementPortal.TaskPortalApi.Repository
 {
@@ -11,12 +13,9 @@ namespace TaskManagementPortal.TaskPortalApi.Repository
     {
         private readonly CloudTable _myTable;
 
-        public ProjectRepository(IConfiguration configuration)
+        public ProjectRepository()
         {
-            var storageAccount = CloudStorageAccount.Parse(configuration.GetConnectionString("StorageConnectionString"));
-            var cloudTableClient = storageAccount.CreateCloudTableClient();
-            _myTable = cloudTableClient.GetTableReference("Project");
-            _myTable.CreateIfNotExistsAsync();
+            _myTable = Common.CreateTable("Project");
         }
 
         public async Task<IEnumerable<ProjectEntity>> ReadAllASync()

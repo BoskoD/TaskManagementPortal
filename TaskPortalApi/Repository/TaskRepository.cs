@@ -1,9 +1,9 @@
 ﻿using Microsoft.Azure.Cosmos.Table;
-using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TaskManagementPortal.Contracts;
 using TaskManagementPortal.Entities.Entities;
+using TaskManagementPortal.TaskPortalApi.Helpers;
 
 namespace TaskManagementPortal.TaskPortalApi.Repository
 {
@@ -11,13 +11,9 @@ namespace TaskManagementPortal.TaskPortalApi.Repository
     {
         private readonly CloudTable _myTable;
 
-        public TaskRepository(IConfiguration configuration)
+        public TaskRepository()
         {
-            var storageAccount = CloudStorageAccount.Parse(configuration.GetConnectionString("StorageConnectionString"));
-            //var storageAccount = CloudStorageAccount.Parse(ConfigurationManager.AppSettings["StorageConnectionString"]);
-            var cloudTableClient = storageAccount.CreateCloudTableClient();
-            _myTable = cloudTableClient.GetTableReference("Task");
-            _myTable.CreateIfNotExistsAsync();
+            _myTable = Common.CreateTable("Task");
         }
 
         public async Task<IEnumerable<TaskEntity>> ReadAllASync()

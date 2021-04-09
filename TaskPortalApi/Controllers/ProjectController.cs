@@ -10,7 +10,6 @@ using Microsoft.Extensions.Caching.Memory;
 using TaskManagementPortal.Contracts;
 using TaskManagementPortal.Entities.DataTransferObjects.Project;
 using TaskManagementPortal.Entities.Entities;
-using OpenTelemetry.Trace;
 
 namespace TaskManagementPortal.TaskPortalApi.Controllers
 {
