@@ -17,8 +17,8 @@ namespace TaskManagementPortal.TaskPortalApi.Controllers
 
         public UserController(IUserRepository userRepository, ILoggerManger logger)
         {
-            _userRepository = userRepository;
-            _logger = logger;
+            _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         [AllowAnonymous]

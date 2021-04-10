@@ -28,10 +28,10 @@ namespace TaskManagementPortal.TaskPortalApi.Controllers
             IMemoryCache memoryCache,
             IMapper mapper)
         {
-            _taskRepository = taskRepository;
-            _logger = logger;
-            _memoryCache = memoryCache;
-            _mapper = mapper;
+            _taskRepository = taskRepository ?? throw new ArgumentNullException(nameof(taskRepository));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _memoryCache = memoryCache ?? throw new ArgumentNullException(nameof(memoryCache));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         [HttpPost("task")]

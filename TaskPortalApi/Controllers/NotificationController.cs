@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using TaskManagementPortal.Entities.Entities;
 using TaskManagementPortal.Contracts;
 using Hangfire;
-
+using System;
 
 namespace TaskManagementPortal.TaskPortalApi.Controllers
 {
@@ -18,8 +18,8 @@ namespace TaskManagementPortal.TaskPortalApi.Controllers
         public NotificationController(ILoggerManger logger, 
             INotificationRepository notification)
         {
-            _logger = logger;
-            _notification = notification;
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _notification = notification ?? throw new ArgumentNullException(nameof(notification));
         }
 
         [HttpPost]

@@ -22,6 +22,8 @@ using TaskManagementPortal.TaskPortalApi.Repository;
 using AutoMapper;
 using Hangfire;
 using NLog;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using HealthChecks.UI.Client;
 
 namespace TaskManagementPortal.TaskPortalApi
 {
@@ -168,7 +170,11 @@ namespace TaskManagementPortal.TaskPortalApi
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-                endpoints.MapHealthChecks("/health");
+                endpoints.MapHealthChecks("/hc", new HealthCheckOptions()
+                {
+                    Predicate = _ => true,
+                    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+                });
 
                 endpoints.MapHangfireDashboard("/hangfire");
             });
