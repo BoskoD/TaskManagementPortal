@@ -5,11 +5,12 @@ using TaskManagementPortal.Contracts;
 using Hangfire;
 using System;
 
-namespace TaskManagementPortal.TaskPortalApi.Controllers
+namespace TaskManagementPortal.TaskPortalApi.APIs.V1.Controllers
 {
     [ApiController]
     [Authorize]
-    [Route("api/")]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/")]
     public class NotificationController : Controller
     {
         private readonly ILoggerManger _logger;

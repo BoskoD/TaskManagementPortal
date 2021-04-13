@@ -11,11 +11,12 @@ using TaskManagementPortal.Contracts;
 using TaskManagementPortal.Entities.DataTransferObjects.Task;
 using TaskManagementPortal.Entities.Entities;
 
-namespace TaskManagementPortal.TaskPortalApi.Controllers
+namespace TaskManagementPortal.TaskPortalApi.APIs.V1.Controllers
 {
     [ApiController]
     [Authorize]
-    [Route("api/")]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/")]
     public class TaskController : ControllerBase
     {
         private readonly IMemoryCache _memoryCache;
@@ -78,7 +79,7 @@ namespace TaskManagementPortal.TaskPortalApi.Controllers
                 entities = _memoryCache.Get("Entities") as IEnumerable<TaskEntity>;
 
                 TaskDto presentation = null;
-                List<TaskDto> taskDtos = new List<TaskDto>();
+                List<TaskDto> taskDtos = new();
 
                 foreach (var entity in entities)
                 {
@@ -195,7 +196,7 @@ namespace TaskManagementPortal.TaskPortalApi.Controllers
                 _logger.LogInfo($"Entities found {tasks.Count()}");
 
                 TaskDto presentation = null;
-                List<TaskDto> taskDtos = new List<TaskDto>();
+                List<TaskDto> taskDtos = new();
 
                 foreach (var task in tasks)
                 {

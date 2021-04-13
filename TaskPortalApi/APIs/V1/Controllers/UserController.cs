@@ -5,11 +5,12 @@ using TaskManagementPortal.Contracts;
 using TaskManagementPortal.Entities.Entities;
 using TaskManagementPortal.Entities.Models;
 
-namespace TaskManagementPortal.TaskPortalApi.Controllers
+namespace TaskManagementPortal.TaskPortalApi.APIs.V1.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("api/")]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/")]
     public class UserController : ControllerBase
     {
         private readonly IUserRepository _userRepository;

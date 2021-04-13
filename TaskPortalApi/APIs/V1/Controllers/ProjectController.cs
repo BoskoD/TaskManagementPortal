@@ -11,11 +11,12 @@ using TaskManagementPortal.Contracts;
 using TaskManagementPortal.Entities.DataTransferObjects.Project;
 using TaskManagementPortal.Entities.Entities;
 
-namespace TaskManagementPortal.TaskPortalApi.Controllers
+namespace TaskManagementPortal.TaskPortalApi.APIs.V1.Controllers
 {
     [ApiController]
     [Authorize]
-    [Route("api/")]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/")]
     public class ProjectController : ControllerBase
     {
         private readonly IMemoryCache _memoryCache;
@@ -79,7 +80,7 @@ namespace TaskManagementPortal.TaskPortalApi.Controllers
                 entities = _memoryCache.Get("Entities") as IEnumerable<ProjectEntity>;
 
                 ProjectDto presentation = null;
-                List<ProjectDto> projectDtos = new List<ProjectDto>();
+                List<ProjectDto> projectDtos = new();
 
                 foreach (var entity in entities)
                 {
