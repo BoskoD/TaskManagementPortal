@@ -42,15 +42,18 @@ namespace TaskManagementPortal.TaskPortalApi
             services.AddHangfireServer();
 
             // configure HealthChecks + (/healthchecks-ui)
-            services.AddHealthChecks() 
-                   .AddSqlServer(Configuration["ConnectionStrings:HangfireStorage"], tags: new[] { "database", "hangfire" });
+            services.AddHealthChecks()
+                   .AddSqlServer(Configuration["ConnectionStrings:HangfireStorage"], tags: new[] { "sql-server", "hangfire" })
+                   .AddAzureBlobStorage(Configuration["StorageConnectionString"], tags: new[] { "azure-storage", "blob" })
+                   .AddAzureQueueStorage(Configuration["StorageConnectionString"], tags: new[] { "azure-storage", "queue" });
+
             services.AddHealthChecksUI(opt =>
             {
                 opt.SetEvaluationTimeInSeconds(15); //time in seconds between check
                 opt.MaximumHistoryEntriesPerEndpoint(60); //maximum history of checks
                 opt.SetApiMaxActiveRequests(1); //api requests concurrency
 
-                opt.AddHealthCheckEndpoint("sql health", "/healthz"); //map health check api
+                opt.AddHealthCheckEndpoint("Storage health", "/healthz"); //map health check api
             }).AddInMemoryStorage();
 
             // configure strongly typed settings objects
