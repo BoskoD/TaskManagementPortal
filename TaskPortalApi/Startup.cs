@@ -41,6 +41,18 @@ namespace TaskManagementPortal.TaskPortalApi
             services.AddHangfire(x => x.UseSqlServerStorage(Configuration.GetConnectionString("HangfireStorage")));
             services.AddHangfireServer();
 
+            // configure HealthChecks + (/healthchecks-ui)
+            services.AddHealthChecks() 
+                   .AddSqlServer(Configuration["ConnectionStrings:HangfireStorage"], tags: new[] { "database", "hangfire" });
+            services.AddHealthChecksUI(opt =>
+            {
+                opt.SetEvaluationTimeInSeconds(15); //time in seconds between check
+                opt.MaximumHistoryEntriesPerEndpoint(60); //maximum history of checks
+                opt.SetApiMaxActiveRequests(1); //api requests concurrency
+
+                opt.AddHealthCheckEndpoint("sql health", "/healthz"); //map health check api
+            }).AddInMemoryStorage();
+
             // configure strongly typed settings objects
             var appSettingsSection = Configuration.GetSection("AppSettings");
             services.Configure<AppSettings>(appSettingsSection);
@@ -66,13 +78,18 @@ namespace TaskManagementPortal.TaskPortalApi
                 };
             });
 
+            // ServiceCollectionExtensions
             services.AddAndConfigureDI();
             services.AddAndConfigureCors();
             services.AddAndConfigureApiVersioning();
             services.AddAndConfigureSwagger();
             services.AddAndConfigureOpenTelemetry();
             services.AddAndConfigureHealthChecks();
+
+            // configure AutoMapper
             services.AddAutoMapper(typeof(Startup));
+
+            // configure MemoryCache
             services.AddMemoryCache();
 
             services.AddControllersWithViews().AddJsonOptions(options =>
@@ -108,8 +125,10 @@ namespace TaskManagementPortal.TaskPortalApi
             });
 
             app.UseRouting();
+
             app.UseAuthentication();
             app.UseAuthorization();
+
             app.UseHangfireDashboard();
 
             app.UseEndpoints(endpoints =>
@@ -118,11 +137,15 @@ namespace TaskManagementPortal.TaskPortalApi
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-                endpoints.MapHealthChecks("/hc", new HealthCheckOptions()
+                //adding endpoint of health check for the health check ui in UI format
+                endpoints.MapHealthChecks("/healthz", new HealthCheckOptions
                 {
                     Predicate = _ => true,
                     ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
                 });
+
+                //map healthcheck ui endpoing - default is /healthchecks-ui/
+                endpoints.MapHealthChecksUI();
 
                 endpoints.MapHangfireDashboard("/hangfire");
             });
