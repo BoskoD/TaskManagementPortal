@@ -2,9 +2,9 @@ using System;
 using System.IO;
 using System.Text;
 using System.Text.Json.Serialization;
-using Azure.Core.Extensions;
 using Azure.Storage.Blobs;
 using Azure.Storage.Queues;
+using Azure.Core.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -14,20 +14,14 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
-using TaskManagementPortal.Contracts;
-using TaskManagementPortal.LoggerService;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using TaskManagementPortal.TaskPortalApi.Helpers;
-using TaskManagementPortal.TaskPortalApi.Repository;
+using HealthChecks.UI.Client;
 using AutoMapper;
 using Hangfire;
 using NLog;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using HealthChecks.UI.Client;
-using Microsoft.Extensions.Options;
-using Swashbuckle.AspNetCore.SwaggerGen;
-using TaskManagementPortal.TaskPortalApi.Infrastructure;
-using Microsoft.AspNetCore.Mvc.ApiExplorer;
+
 
 namespace TaskManagementPortal.TaskPortalApi
 {
@@ -43,12 +37,8 @@ namespace TaskManagementPortal.TaskPortalApi
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
-            services.ConfigureCors();
-            services.AddMemoryCache();
-            // configure Hangfire connection string
-            services.AddHangfire(x => x.UseSqlServerStorage(Configuration
-                .GetConnectionString("HangfireStorage")));
+            // configure Hangfire
+            services.AddHangfire(x => x.UseSqlServerStorage(Configuration.GetConnectionString("HangfireStorage")));
             services.AddHangfireServer();
 
             // configure strongly typed settings objects
@@ -76,69 +66,14 @@ namespace TaskManagementPortal.TaskPortalApi
                 };
             });
 
-            // configure DI for application services
-            services.AddScoped<IUserRepository, UserRepository>();
-            services.AddTransient<IProjectRepository, ProjectRepository>();
-            services.AddTransient<ITaskRepository, TaskRepository>();
-            services.AddTransient<INotificationRepository, NotificationRepository>();
-            services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
-
-
-            // configure Logger
-            services.AddSingleton<ILoggerManger, LoggerManager>();
-
-            // configure AutoMapper
+            services.AddAndConfigureDI();
+            services.AddAndConfigureCors();
+            services.AddAndConfigureApiVersioning();
+            services.AddAndConfigureSwagger();
+            services.AddAndConfigureOpenTelemetry();
+            services.AddAndConfigureHealthChecks();
             services.AddAutoMapper(typeof(Startup));
-
-            // configure Swagger
-            services.AddSwaggerGen(c =>
-            {
-                // add a custom operation filter which sets default values
-                c.OperationFilter<SwaggerDefaultValues>();
-
-                //// Set the comments path for the Swagger JSON and UI.
-                //var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                //var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                //c.IncludeXmlComments(xmlPath);
-
-                var securityScheme = new OpenApiSecurityScheme
-                {
-                    Name = "JWT Authentication",
-                    Description = "Enter JWT Bearer token **_only_**",
-                    In = ParameterLocation.Header,
-                    Type = SecuritySchemeType.Http,
-                    Scheme = "bearer", // must be lower case
-                    BearerFormat = "JWT",
-                    Reference = new OpenApiReference
-                    {
-                        Id = JwtBearerDefaults.AuthenticationScheme,
-                        Type = ReferenceType.SecurityScheme
-                    }
-                };
-                c.AddSecurityDefinition(securityScheme.Reference.Id, securityScheme);
-                c.AddSecurityRequirement(new OpenApiSecurityRequirement
-                {
-                    {securityScheme, Array.Empty<string>()}
-                });
-            });
-
-            // configure API versioning
-            services.AddApiVersioning(options =>
-            {
-                // reporting api versions will return the headers "api-supported-versions" and "api-deprecated-versions"
-                options.ReportApiVersions = true;
-            });
-
-            services.AddVersionedApiExplorer(options =>
-            {
-                // add the versioned api explorer, which also adds IApiVersionDescriptionProvider service
-                // note: the specified format code will format the version as "'v'major[.minor][-status]"
-                options.GroupNameFormat = "'v'VVV";
-
-                // note: this option is only necessary when versioning by url segment. the SubstitutionFormat
-                // can also be used to control the format of the API version in route templates
-                options.SubstituteApiVersionInUrl = true;
-            });
+            services.AddMemoryCache();
 
             services.AddControllersWithViews().AddJsonOptions(options =>
                  options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
@@ -148,10 +83,6 @@ namespace TaskManagementPortal.TaskPortalApi
                 builder.AddBlobServiceClient(Configuration["ConnectionStrings:StorageConnectionString:blob"], preferMsi: true);
                 builder.AddQueueServiceClient(Configuration["ConnectionStrings:StorageConnectionString:queue"], preferMsi: true);
             });
-            services.AddHealthChecks();
-
-            // configure OpenTelemetry
-            services.ConfigureOpenTelemetry();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

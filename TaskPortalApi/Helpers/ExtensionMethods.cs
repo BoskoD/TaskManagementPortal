@@ -10,29 +10,6 @@ namespace TaskManagementPortal.TaskPortalApi.Helpers
 {
     public static class ExtensionMethods
     {
-        // Cross origin requests
-        public static void ConfigureCors(this IServiceCollection services)
-        {
-            services.AddCors(options =>
-            {
-                options.AddPolicy("CorsPolicy",
-                    builder => builder.AllowAnyOrigin()
-                    .AllowAnyMethod()
-                    .AllowAnyHeader());
-            });
-        }
-
-        // Open telemetry
-        public static void ConfigureOpenTelemetry(this IServiceCollection services)
-        {
-            services.AddOpenTelemetryTracing(
-                (builder) => builder
-                   .SetResourceBuilder(
-                        ResourceBuilder.CreateDefault().AddService("TaskPortal"))
-                            .AddAspNetCoreInstrumentation()
-                            .AddConsoleExporter());
-        }
-
         // Bearer 
         public static IEnumerable<UserEntity> WithoutPasswords(this IEnumerable<UserEntity> users) 
         {
