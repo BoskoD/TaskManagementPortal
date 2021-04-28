@@ -15,7 +15,7 @@ export class AddUpdateTaskComponent implements OnInit {
   id: string;
   name: string;
   description: string;
-  isComplete: boolean;
+  isComplete: string;
 
   ProjectsList:any;
 
@@ -50,15 +50,17 @@ export class AddUpdateTaskComponent implements OnInit {
     });
   }
 
+
   updateTask(){
     var val = { id: this.id,
                 projectId: this.projectId,
                 name: this.name,
                 description: this.description,
-                isComplete: this.isComplete}
-   this.service.updateTask(val).subscribe(res=>{
-        console.log(res);
+                isComplete:this.isComplete};
+                console.log(val);
+    this.service.updateTask(val).subscribe(res=>{console.log(res);
         alert("Task updated");
-      });
-    };
+      }, error => {console.log(error);
+    });
   }
+}

@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
     <RootNamespace>Integration_Tests</RootNamespace>
 
     <IsPackable>false</IsPackable>
@@ -22,7 +22,11 @@
 
   <ItemGroup>
     <Folder Include="Task\" />
-    <Folder Include="Project\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Contracts\Contracts.csproj" />
+    <ProjectReference Include="..\TaskPortalApi\TaskPortalApi.csproj" />
   </ItemGroup>
 
 </Project>

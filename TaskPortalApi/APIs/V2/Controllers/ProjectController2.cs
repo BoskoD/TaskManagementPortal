@@ -11,7 +11,7 @@ using TaskManagementPortal.Contracts;
 using TaskManagementPortal.Entities.DataTransferObjects.Project;
 using TaskManagementPortal.Entities.Entities;
 
-namespace TaskManagementPortal.TaskPortalApi.APIs.V1.Controllers
+namespace TaskManagementPortal.TaskPortalApi.APIs.V2.Controllers
 {
     // Redis 
 
@@ -36,6 +36,7 @@ namespace TaskManagementPortal.TaskPortalApi.APIs.V1.Controllers
             _memoryCache = memoryCache ?? throw new ArgumentNullException(nameof(memoryCache));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
+      
 
         [HttpPost("project")]
         public async Task<IActionResult> CreateProject([FromBody] CreateUpdateProjectDto createProjectDto)

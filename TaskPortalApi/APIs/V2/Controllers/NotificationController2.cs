@@ -5,7 +5,7 @@ using TaskManagementPortal.Contracts;
 using Hangfire;
 using System;
 
-namespace TaskManagementPortal.TaskPortalApi.APIs.V1.Controllers
+namespace TaskManagementPortal.TaskPortalApi.APIs.V2.Controllers
 {
     [ApiController]
     [Authorize]

@@ -5,7 +5,7 @@ using TaskManagementPortal.Contracts;
 using TaskManagementPortal.Entities.Entities;
 using TaskManagementPortal.Entities.Models;
 
-namespace TaskManagementPortal.TaskPortalApi.APIs.V1.Controllers
+namespace TaskManagementPortal.TaskPortalApi.APIs.V2.Controllers
 {
     [Authorize]
     [ApiController]

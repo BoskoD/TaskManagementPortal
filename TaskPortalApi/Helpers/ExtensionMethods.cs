@@ -1,7 +1,3 @@
-using Microsoft.Extensions.DependencyInjection;
-using OpenTelemetry;
-using OpenTelemetry.Resources;
-using OpenTelemetry.Trace;
 using System.Collections.Generic;
 using System.Linq;
 using TaskManagementPortal.Entities.Entities;
