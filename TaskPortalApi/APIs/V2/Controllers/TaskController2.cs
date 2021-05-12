@@ -12,20 +12,20 @@ using TaskManagementPortal.Entities.DataTransferObjects.Task;
 using TaskManagementPortal.Entities.Entities;
 using TaskManagementPortal.Entities.Pagination;
 
-namespace TaskManagementPortal.TaskPortalApi.APIs.V1.Controllers
+namespace TaskManagementPortal.TaskPortalApi.APIs.V2.Controllers
 {
     [ApiController]
     [Authorize]
-    [ApiVersion("1.0")]
+    [ApiVersion("2.0")]
     [Route("api/v{version:apiVersion}/")]
-    public class TaskController : ControllerBase
+    public class TaskController2 : ControllerBase
     {
         private readonly IMemoryCache _memoryCache;
         private readonly ITaskRepository _taskRepository;
         private readonly ILoggerManger _logger;
         private readonly IMapper _mapper;
 
-        public TaskController(ILoggerManger logger, 
+        public TaskController2(ILoggerManger logger, 
             ITaskRepository taskRepository, 
             IMemoryCache memoryCache,
             IMapper mapper)

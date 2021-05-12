@@ -10,6 +10,7 @@ using Microsoft.Extensions.Caching.Memory;
 using TaskManagementPortal.Contracts;
 using TaskManagementPortal.Entities.DataTransferObjects.Project;
 using TaskManagementPortal.Entities.Entities;
+using TaskManagementPortal.Entities.Pagination;
 
 namespace TaskManagementPortal.TaskPortalApi.APIs.V2.Controllers
 {
@@ -71,16 +72,17 @@ namespace TaskManagementPortal.TaskPortalApi.APIs.V2.Controllers
         }
 
         [HttpGet("projects")]
-        public async Task<IActionResult> GetAllProjects()
+        public async Task<IActionResult> GetAllProjects([FromQuery] PaginationProperties paginationParameters)
         {
             try
             {
                 _logger.LogInfo($"Returned all projects from database.");
                 if (!_memoryCache.TryGetValue("Entities", out IEnumerable<ProjectEntity> entities))
                 {
-                    _memoryCache.Set("Entities", await _projectRepository.ReadAllASync());
+                    _memoryCache.Set("Entities", await _projectRepository.ReadAllASync(paginationParameters));
                 }
                 entities = _memoryCache.Get("Entities") as IEnumerable<ProjectEntity>;
+                
 
                 ProjectDto presentation = null;
                 List<ProjectDto> projectDtos = new();
@@ -106,7 +108,7 @@ namespace TaskManagementPortal.TaskPortalApi.APIs.V2.Controllers
         {
             try
             {
-                var entities = await _projectRepository.ReadAllASync();
+                var entities = await _projectRepository.GetAll();
                 var projectEntity = entities.FirstOrDefault(e => e.RowKey == id);
 
                 ProjectDto presentation = null;
@@ -167,7 +169,7 @@ namespace TaskManagementPortal.TaskPortalApi.APIs.V2.Controllers
         {
             try
             {
-                var projectEntity = _projectRepository.ReadAllASync().Result.FirstOrDefault(p => p.RowKey == id);
+                var projectEntity = _projectRepository.GetAll().Result.FirstOrDefault(p => p.RowKey == id);
                 if (projectEntity == null)
                 {
                     _logger.LogError($"Project with id: {id}, hasn't been found in db.");
