@@ -75,7 +75,14 @@ namespace TaskManagementPortal.TaskPortalApi.APIs.V1.Controllers
                 _logger.LogInfo($"Returned all projects from database.");
                 if (!_memoryCache.TryGetValue("Entities", out IEnumerable<ProjectEntity> entities))
                 {
-                    _memoryCache.Set("Entities", await _projectRepository.ReadAllASync());
+                    var cacheExpirationOptions = new MemoryCacheEntryOptions
+                    {
+                        AbsoluteExpiration = DateTime.Now.AddHours(6),
+                        Priority = CacheItemPriority.Normal,
+                        SlidingExpiration = TimeSpan.FromMinutes(5)
+                    };
+
+                    _memoryCache.Set("Entities", await _projectRepository.ReadAllASync(), cacheExpirationOptions);
                 }
                 entities = _memoryCache.Get("Entities") as IEnumerable<ProjectEntity>;
 
