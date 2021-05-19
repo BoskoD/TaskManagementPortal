@@ -1,8 +1,6 @@
-using System;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Hosting;
-using System.Security.Authentication;
+using Microsoft.Extensions.Configuration;
 
 namespace TaskManagementPortal.TaskPortalApi
 {
@@ -14,21 +12,13 @@ namespace TaskManagementPortal.TaskPortalApi
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.ConfigureKestrel(serverOptions =>
-                    {
-                        serverOptions.Limits.MinRequestBodyDataRate = new MinDataRate(100, TimeSpan.FromSeconds(10));
-                        serverOptions.Limits.MinResponseDataRate = new MinDataRate(100, TimeSpan.FromSeconds(10));
-                        serverOptions.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(2);
-                        serverOptions.Limits.RequestHeadersTimeout = TimeSpan.FromMinutes(1);
-                        serverOptions.ConfigureHttpsDefaults(listenOptions =>
-                        {
-                            listenOptions.SslProtocols = SslProtocols.Tls12;
-                        });
-                    })
-                    .UseStartup<Startup>();
-                });
+            Host.CreateDefaultBuilder(args).ConfigureWebHostDefaults(webBuilder =>
+            webBuilder.ConfigureAppConfiguration(config =>
+            {
+                var settings = config.Build();
+                var connection = settings.GetConnectionString("AppConfig");
+                    config.AddAzureAppConfiguration(options =>
+                        options.Connect(connection).UseFeatureFlags()); //Using Secret Manager
+            }).UseStartup<Startup>());
     }
 }

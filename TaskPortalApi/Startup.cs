@@ -21,7 +21,7 @@ using HealthChecks.UI.Client;
 using AutoMapper;
 using Hangfire;
 using NLog;
-
+using Microsoft.FeatureManagement;
 
 namespace TaskManagementPortal.TaskPortalApi
 {
@@ -88,6 +88,7 @@ namespace TaskManagementPortal.TaskPortalApi
             services.AddAndConfigureSwagger();
             services.AddAndConfigureOpenTelemetry();
             services.AddAndConfigureHealthChecks();
+            services.AddFeatureManagement();
 
             // configure AutoMapper
             services.AddAutoMapper(typeof(Startup));
