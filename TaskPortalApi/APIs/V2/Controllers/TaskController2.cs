@@ -4,18 +4,17 @@ using System.Linq;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Caching.Memory;
 using TaskManagementPortal.Contracts;
 using TaskManagementPortal.Entities.DataTransferObjects.Task;
 using TaskManagementPortal.Entities.Entities;
 
-namespace TaskManagementPortal.TaskPortalApi.APIs.V1.Controllers
+namespace TaskManagementPortal.TaskPortalApi.APIs.V2.Controllers
 {
     [ApiController]
     [Authorize]
-    [ApiVersion("1.0")]
+    [ApiVersion("2.0")]
     [Route("api/v{version:apiVersion}/")]
     public class TaskController2 : ControllerBase
     {

@@ -4,15 +4,15 @@ using TaskManagementPortal.Entities.Entities;
 using TaskManagementPortal.Contracts;
 using Hangfire;
 using System;
-using Microsoft.FeatureManagement;
-using Microsoft.FeatureManagement.Mvc;
 using TaskPortalApi.FeatureManager;
+using Microsoft.FeatureManagement.Mvc;
+using Microsoft.FeatureManagement;
 
-namespace TaskManagementPortal.TaskPortalApi.APIs.V1.Controllers
+namespace TaskManagementPortal.TaskPortalApi.APIs.V2.Controllers
 {
     [ApiController]
     [Authorize]
-    [ApiVersion("1.0")]
+    [ApiVersion("2.0")]
     [Route("api/v{version:apiVersion}/")]
     public class NotificationController : Controller
     {
@@ -28,7 +28,6 @@ namespace TaskManagementPortal.TaskPortalApi.APIs.V1.Controllers
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _notification = notification ?? throw new ArgumentNullException(nameof(notification));
             _featureManager = featureManager ?? throw new ArgumentNullException(nameof(featureManager));
-
         }
 
         [FeatureGate(MyFeatureFlags.Notifications)]
