@@ -60,6 +60,7 @@ API documentation V1: https://taskportal-v1.azurewebsites.net/index.html
 - [x] ARM profile
 - [x] Hangfire
 - [x] Telemetry
+- [x] CI/CD using GitHub Actions
 - [ ] Docker
 - [ ] File storage: Upload/Download
 - [ ] Kubernetes / SF
