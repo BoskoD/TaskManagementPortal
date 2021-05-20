@@ -61,6 +61,7 @@ API documentation V1: https://taskportal-v1.azurewebsites.net/index.html
 - [x] Hangfire
 - [x] Telemetry
 - [x] CI/CD using GitHub Actions
+- [x] Feature flags
 - [ ] Docker
 - [ ] File storage: Upload/Download
 - [ ] Kubernetes / SF
