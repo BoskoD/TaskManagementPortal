@@ -38,12 +38,12 @@ namespace TaskManagementPortal.TaskPortalApi
         public void ConfigureServices(IServiceCollection services)
         {
             // configure Hangfire
-            services.AddHangfire(x => x.UseSqlServerStorage(Configuration.GetConnectionString("HangfireStorage")));
+            services.AddHangfire(x => x.UseSqlServerStorage(Configuration["HangfireStorage"]));
             services.AddHangfireServer();
 
             // configure HealthChecks + (/healthchecks-ui)
             services.AddHealthChecks()
-                   .AddSqlServer(Configuration["ConnectionStrings:HangfireStorage"], tags: new[] { "sql-server", "hangfire" })
+                   .AddSqlServer(Configuration["HangfireStorage"], tags: new[] { "sql-server", "hangfire" })
                    .AddAzureBlobStorage(Configuration["StorageConnectionString"], tags: new[] { "azure-storage", "blob" })
                    .AddAzureQueueStorage(Configuration["StorageConnectionString"], tags: new[] { "azure-storage", "queue" });
 
